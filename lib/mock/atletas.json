@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "nomeCompleto": "Maria Exemplo da Silva",
+    "dataNascimento": "2010-05-14",
+    "cpf": "00000000000",
+    "rg": "0000000",
+    "cep": "60165000",
+    "bairro": "Meireles",
+    "endereco": "Av. Beira Mar",
+    "numero": "100",
+    "codJuv": "",
+    "cadUnico": "12345678900",
+    "nomeMae": "Ana Exemplo",
+    "nomePai": "João Exemplo",
+    "telefoneMae": "85999990000",
+    "telefonePai": "85999991111",
+    "rgMae": "1111111",
+    "rgPai": "2222222",
+    "status": "pendente"
+  },
+  {
+    "id": 2,
+    "nomeCompleto": "Pedro Exemplo Souza",
+    "dataNascimento": "2000-02-20",
+    "cpf": "11111111111",
+    "rg": "3333333",
+    "cep": "60060000",
+    "bairro": "Centro",
+    "endereco": "Rua Exemplo",
+    "numero": "45",
+    "codJuv": "JUV001",
+    "cadUnico": "98765432100",
+    "status": "aprovado"
+  }
+]
