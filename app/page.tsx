@@ -1,25 +1,33 @@
-import Header from "@/components/landing/Header";
+import Header from "@/components/site/Header";
+import Footer from "@/components/site/Footer";
+import Hero from "@/components/landing/Hero";
+import Marquee from "@/components/landing/Marquee";
 import QuemSomos from "@/components/landing/QuemSomos";
-import NossoObjetivo from "@/components/landing/NossoObjetivo";
-import ComoNasceu from "@/components/landing/ComoNasceu";
-import ComoFuncionamos from "@/components/landing/ComoFuncionamos";
+import Pilares from "@/components/landing/Pilares";
+import Treinos from "@/components/landing/Treinos";
 import Conquistas from "@/components/landing/Conquistas";
+import Galeria from "@/components/landing/Galeria";
+import NoticiasPreview from "@/components/landing/NoticiasPreview";
 import Idealizador from "@/components/landing/Idealizador";
-import CtaCadastro from "@/components/landing/CtaCadastro";
-import Footer from "@/components/landing/Footer";
+import CtaFinal from "@/components/landing/CtaFinal";
 
 export default function LandingPage() {
   return (
-    <main className="flex flex-col">
+    <>
       <Header />
-      <QuemSomos />
-      <NossoObjetivo />
-      <ComoNasceu />
-      <ComoFuncionamos />
-      <Conquistas />
-      <Idealizador />
-      <CtaCadastro />
+      <main>
+        <Hero />
+        <Marquee />
+        <QuemSomos />
+        <Pilares />
+        <Treinos />
+        <Conquistas />
+        <Galeria />
+        <NoticiasPreview />
+        <Idealizador />
+        <CtaFinal />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

@@ -1,0 +1,39 @@
+import type { MetadataRoute } from "next";
+
+const BASE = "https://vencedorespontemetalica.com";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const agora = new Date();
+  return [
+    {
+      url: `${BASE}/`,
+      lastModified: agora,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: `${BASE}/noticias`,
+      lastModified: agora,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE}/cadastro`,
+      lastModified: agora,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE}/atletas`,
+      lastModified: agora,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${BASE}/creditos`,
+      lastModified: agora,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
+  ];
+}

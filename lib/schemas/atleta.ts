@@ -2,13 +2,28 @@ import { z } from "zod";
 import { calcularIdade } from "@/lib/idade";
 
 const camposGeraisSchema = z.object({
+  // Conta de acesso ao portal do atleta
+  email: z.string().min(1, "Informe o e-mail").email("E-mail inválido"),
+  senha: z.string().min(6, "A senha precisa ter ao menos 6 caracteres"),
+  confirmarSenha: z.string().min(1, "Confirme a senha"),
+
   nomeCompleto: z.string().min(3, "Informe o nome completo"),
   dataNascimento: z.string().min(1, "Informe a data de nascimento"),
+  telefone: z
+    .string()
+    .transform((v) => v.replace(/\D/g, ""))
+    .refine((v) => v.length >= 10 && v.length <= 11, "Telefone inválido"),
   cpf: z
     .string()
     .transform((v) => v.replace(/\D/g, ""))
     .refine((v) => v.length === 11, "CPF deve ter 11 dígitos"),
   rg: z.string().min(5, "RG inválido"),
+
+  modalidade: z.literal("bodyboard"),
+  nivel: z.enum(["iniciante", "intermediario", "avancado"], {
+    required_error: "Escolha o nível",
+  }),
+
   cep: z
     .string()
     .transform((v) => v.replace(/\D/g, ""))
@@ -18,6 +33,10 @@ const camposGeraisSchema = z.object({
   numero: z.string().min(1, "Informe o número"),
   codJuv: z.string().optional(),
   cadUnico: z.string().min(1, "Informe o número do CadÚnico"),
+
+  consentimento: z
+    .boolean()
+    .refine((v) => v === true, "É necessário autorizar o uso dos dados para concluir"),
 });
 
 // Campos exigidos apenas quando o atleta é menor de idade.
@@ -33,6 +52,14 @@ const camposResponsavelSchema = z.object({
 export const atletaSchema = camposGeraisSchema
   .merge(camposResponsavelSchema)
   .superRefine((data, ctx) => {
+    if (data.senha !== data.confirmarSenha) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["confirmarSenha"],
+        message: "As senhas não coincidem",
+      });
+    }
+
     const idade = calcularIdade(data.dataNascimento);
     if (idade >= 18) return;
 
