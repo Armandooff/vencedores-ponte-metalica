@@ -13,25 +13,27 @@ type FormEvento = {
   data: string;
   hora: string;
   local: string;
-  turma: string;
   ativo: boolean;
 };
 
 export default function ModalEvento({
   evento,
+  dataInicial,
+  tituloInicial,
   onClose,
 }: {
   evento?: Evento;
+  dataInicial?: string;
+  tituloInicial?: string;
   onClose: () => void;
 }) {
   const { criarEvento, atualizarEvento } = useDados();
   const [form, setForm] = useState<FormEvento>({
-    titulo: evento?.titulo ?? "",
+    titulo: evento?.titulo ?? tituloInicial ?? "",
     descricao: evento?.descricao ?? "",
-    data: evento?.data ?? hojeISO(),
+    data: evento?.data ?? dataInicial ?? hojeISO(),
     hora: evento?.hora ?? "07:00",
     local: evento?.local ?? "Praia de Iracema — em frente à Ponte dos Ingleses",
-    turma: evento?.turma ?? "Todas as turmas",
     ativo: evento?.ativo ?? true,
   });
   const [erro, setErro] = useState<string | null>(null);
@@ -44,7 +46,6 @@ export default function ModalEvento({
       data: evento.data,
       hora: evento.hora,
       local: evento.local,
-      turma: evento.turma,
       ativo: evento.ativo,
     });
   }, [evento]);
@@ -83,7 +84,7 @@ export default function ModalEvento({
             value={form.titulo}
             onChange={(e) => definir("titulo", e.target.value)}
             className="input"
-            placeholder="Ex.: Treino de bodyboard · Turma iniciante"
+            placeholder="Ex.: Treino de bodyboard · Sábado"
           />
         </div>
 
@@ -125,16 +126,6 @@ export default function ModalEvento({
             value={form.local}
             onChange={(e) => definir("local", e.target.value)}
             className="input"
-          />
-        </div>
-
-        <div>
-          <span className="field-label">Turma</span>
-          <input
-            value={form.turma}
-            onChange={(e) => definir("turma", e.target.value)}
-            className="input"
-            placeholder="Todas as turmas / Iniciante / Avançado"
           />
         </div>
 

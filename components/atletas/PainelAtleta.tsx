@@ -4,21 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import AvatarAtleta from "@/components/ui/AvatarAtleta";
 import Logo from "@/components/ui/Logo";
 import Modal from "@/components/ui/Modal";
+import ModalPerfilAtleta from "./ModalPerfilAtleta";
 import { useAuth } from "@/lib/auth";
 import { useDados } from "@/lib/store";
+import { rotuloCategoriaOuPendente } from "@/lib/categorias";
 import {
   classesCategoria,
   classesStatus,
   formatarData,
   formatarDataCurta,
   hojeISO,
-  iniciais,
   mascararTelefone,
   rotuloCategoria,
-  rotuloModalidade,
-  rotuloNivel,
   rotuloStatus,
 } from "@/lib/format";
 import type { CategoriaNoticia, Noticia } from "@/lib/types";
@@ -59,6 +59,8 @@ export default function PainelAtleta() {
   const { db, pronto: dadosProntos } = useDados();
   const [categoria, setCategoria] = useState<(typeof categorias)[number]>("Todas");
   const [noticiaAberta, setNoticiaAberta] = useState<Noticia | null>(null);
+  const [perfilAberto, setPerfilAberto] = useState(false);
+  const hoje = hojeISO();
 
   useEffect(() => {
     if (!pronto) return;
@@ -89,11 +91,21 @@ export default function PainelAtleta() {
   );
 
   const proximoEvento = useMemo(() => {
-    const hoje = hojeISO();
     return [...db.eventos]
       .filter((e) => e.ativo && e.data >= hoje)
       .sort((a, b) => `${a.data}${a.hora}`.localeCompare(`${b.data}${b.hora}`))[0];
-  }, [db.eventos]);
+  }, [db.eventos, hoje]);
+
+  const eventosAtivos = useMemo(() => {
+    return [...db.eventos]
+      .filter((e) => e.ativo)
+      .sort((a, b) => {
+        const passadoA = a.data < hoje;
+        const passadoB = b.data < hoje;
+        if (passadoA !== passadoB) return passadoA ? 1 : -1;
+        return `${a.data}${a.hora}`.localeCompare(`${b.data}${b.hora}`);
+      });
+  }, [db.eventos, hoje]);
 
   if (!pronto || !atletaAtual) {
     return (
@@ -122,6 +134,12 @@ export default function PainelAtleta() {
               className="text-[13px] font-medium text-white/70 transition hover:text-sun"
             >
               Novidades
+            </a>
+            <a
+              href="#agenda"
+              className="text-[13px] font-medium text-white/70 transition hover:text-sun"
+            >
+              Minha agenda
             </a>
             <a
               href="#perfil"
@@ -156,6 +174,35 @@ export default function PainelAtleta() {
             </button>
           </div>
         </div>
+        <nav
+          aria-label="Navegação do atleta"
+          className="container-x flex gap-5 overflow-x-auto border-t border-white/10 py-3 text-[11px] font-bold uppercase tracking-wide text-white/70 md:hidden"
+        >
+          <a
+            href="#novidades"
+            className="whitespace-nowrap py-2 transition hover:text-sun focus-visible:text-sun"
+          >
+            Novidades
+          </a>
+          <a
+            href="#agenda"
+            className="whitespace-nowrap py-2 transition hover:text-sun focus-visible:text-sun"
+          >
+            Minha agenda
+          </a>
+          <a
+            href="#perfil"
+            className="whitespace-nowrap py-2 transition hover:text-sun focus-visible:text-sun"
+          >
+            Meu perfil
+          </a>
+          <Link
+            href="/noticias"
+            className="whitespace-nowrap py-2 transition hover:text-sun focus-visible:text-sun"
+          >
+            Notícias
+          </Link>
+        </nav>
       </header>
 
       <div className="bg-ink pb-24 pt-10 text-white">
@@ -173,14 +220,15 @@ export default function PainelAtleta() {
               </h1>
             </div>
             <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sun font-display text-lg text-ink">
-                {iniciais(atletaAtual.nomeCompleto)}
-              </span>
+              <AvatarAtleta
+                nome={atletaAtual.nomeCompleto}
+                foto={atletaAtual.foto}
+                className="h-12 w-12 text-sm !bg-white/15 !text-white"
+              />
               <div>
                 <p className="text-sm font-semibold">{atletaAtual.nomeCompleto}</p>
                 <p className="text-[11px] uppercase tracking-wider text-white/60">
-                  {rotuloModalidade[atletaAtual.modalidade]} ·{" "}
-                  {rotuloNivel[atletaAtual.nivel]}
+                  {rotuloCategoriaOuPendente(atletaAtual.categoria)}
                 </p>
               </div>
             </div>
@@ -212,15 +260,15 @@ export default function PainelAtleta() {
           <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-card">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">
-                Sua modalidade
+                Sua categoria
               </span>
               <Waves size={16} className="text-sun-700" />
             </div>
-            <p className="mt-3 font-display text-3xl uppercase leading-none text-ink">
-              {rotuloModalidade[atletaAtual.modalidade]}
+            <p className="mt-3 font-display text-2xl uppercase leading-none text-ink">
+              {rotuloCategoriaOuPendente(atletaAtual.categoria)}
             </p>
             <p className="mt-2 text-xs text-ink/65">
-              Nível {rotuloNivel[atletaAtual.nivel].toLowerCase()}
+              Definida pela coordenação do projeto.
             </p>
             <p className="mt-3 text-xs leading-relaxed text-ink/65">
               Atleta desde {formatarDataCurta(atletaAtual.criadoEm)}.
@@ -244,7 +292,7 @@ export default function PainelAtleta() {
                   })}
                 </p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-ink/65">
-                  <Clock size={12} /> {proximoEvento.hora} · {proximoEvento.turma}
+                  <Clock size={12} /> {proximoEvento.hora}
                 </p>
                 <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-ink/65">
                   {proximoEvento.titulo}
@@ -279,6 +327,87 @@ export default function PainelAtleta() {
           </div>
         </div>
       </div>
+
+      <section id="agenda" className="container-x py-12">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="kicker text-sun-700">
+              <span className="h-px w-6 bg-sun-600" />
+              Minha agenda
+            </p>
+            <h2 className="mt-2 font-display text-3xl uppercase leading-none text-ink">
+              Todos os nossos encontros.
+            </h2>
+          </div>
+          <p className="max-w-sm text-sm text-ink/65">
+            Treinos e eventos ativos do projeto. Os encontros passados ficam
+            marcados como encerrados até a coordenação atualizar a agenda.
+          </p>
+        </div>
+
+        {eventosAtivos.length ? (
+          <div className="mt-6 grid gap-3 md:grid-cols-2">
+            {eventosAtivos.map((evento) => {
+              const encerrado = evento.data < hoje;
+              return (
+                <article
+                  key={evento.id}
+                  className={`rounded-2xl border p-5 ${
+                    encerrado
+                      ? "border-ink/10 bg-white/60"
+                      : "border-ink/10 bg-white shadow-card"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sun/15 text-sun-700">
+                        <Calendar size={18} />
+                      </span>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sun-700">
+                          {formatarData(evento.data)}
+                        </p>
+                        <h3 className="mt-1 font-display text-lg uppercase leading-tight text-ink">
+                          {evento.titulo}
+                        </h3>
+                      </div>
+                    </div>
+                    <span
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                        encerrado
+                          ? "border-ink/15 bg-ink/[0.04] text-ink/55"
+                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      }`}
+                    >
+                      {encerrado ? "Encerrado" : "Confirmado"}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink/60">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock size={13} /> {evento.hora}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin size={13} /> {evento.local}
+                    </span>
+                  </div>
+                  {evento.descricao && (
+                    <p className="mt-3 text-xs leading-relaxed text-ink/60">
+                      {evento.descricao}
+                    </p>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="mt-6 rounded-2xl border border-dashed border-ink/15 bg-white/60 p-8 text-center">
+            <p className="text-sm text-ink/60">
+              Nenhum evento ativo no momento. A coordenação avisa por aqui
+              quando a agenda for atualizada.
+            </p>
+          </div>
+        )}
+      </section>
 
       <main className="container-x grid gap-8 py-12 lg:grid-cols-[1fr_340px]">
         <section id="novidades" className="min-w-0">
@@ -383,9 +512,12 @@ export default function PainelAtleta() {
             className="rounded-2xl border border-ink/10 bg-white p-6 shadow-card"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sun font-display text-lg text-ink">
-                {iniciais(atletaAtual.nomeCompleto)}
-              </span>
+              <AvatarAtleta
+                nome={atletaAtual.nomeCompleto}
+                foto={atletaAtual.foto}
+                className="h-14 w-14"
+                sizes="56px"
+              />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-ink">
                   {atletaAtual.nomeCompleto}
@@ -413,17 +545,35 @@ export default function PainelAtleta() {
               </div>
               <div>
                 <dt className="text-[10px] font-bold uppercase tracking-wider text-ink/60">
-                  Modalidade
+                  Categoria
                 </dt>
                 <dd className="mt-0.5 text-ink/70">
-                  {rotuloModalidade[atletaAtual.modalidade]} ·{" "}
-                  {rotuloNivel[atletaAtual.nivel]}
+                  {rotuloCategoriaOuPendente(atletaAtual.categoria)}
                 </dd>
               </div>
             </dl>
 
-            <p className="mt-5 border-t border-ink/10 pt-4 text-[11px] leading-relaxed text-ink/60">
-              Para atualizar seus dados, fale com a coordenação do projeto.
+            {atletaAtual.historia && (
+              <div className="mt-5 border-t border-ink/10 pt-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-ink/60">
+                  Minha história
+                </p>
+                <p className="mt-1 whitespace-pre-line text-[11px] leading-relaxed text-ink/65">
+                  {atletaAtual.historia}
+                </p>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setPerfilAberto(true)}
+              className="btn-ghost-dark mt-5 w-full !justify-center !px-4 !py-2.5 !text-[10px]"
+            >
+              <User size={14} /> Editar perfil
+            </button>
+            <p className="mt-3 text-center text-[10px] leading-relaxed text-ink/70">
+              Nome, CPF, nascimento, categoria e responsáveis são atualizados pela
+              coordenação.
             </p>
           </div>
 
@@ -445,7 +595,7 @@ export default function PainelAtleta() {
                   </p>
                   <p className="flex items-center gap-2">
                     <Clock size={14} className="text-sun" />
-                    {proximoEvento.hora} · {proximoEvento.turma}
+                    {proximoEvento.hora}
                   </p>
                   <p className="flex items-start gap-2">
                     <MapPin size={14} className="mt-0.5 shrink-0 text-sun" />
@@ -486,6 +636,13 @@ export default function PainelAtleta() {
           <p>Praia de Iracema · Fortaleza · CE</p>
         </div>
       </footer>
+
+      {perfilAberto && (
+        <ModalPerfilAtleta
+          atleta={atletaAtual}
+          onClose={() => setPerfilAberto(false)}
+        />
+      )}
 
       <Modal
         open={Boolean(noticiaAberta)}

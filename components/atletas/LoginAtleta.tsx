@@ -62,7 +62,7 @@ export default function LoginAtleta() {
       <div className="relative hidden overflow-hidden lg:block">
         <Image
           src="/img/comunidade.jpg"
-          alt="Bodyboarders do projeto na praia ao pôr do sol"
+          alt="Famílias e atletas do projeto na praia"
           fill
           priority
           sizes="55vw"

@@ -24,12 +24,12 @@ documental.
 | `/noticias` | Mural público de notícias com busca, filtros por categoria e leitura em modal |
 | `/cadastro` | Inscrição completa do atleta, com responsáveis para menores de 18 e consentimento LGPD |
 | `/atletas` | Login do portal do atleta |
-| `/atletas/painel` | Painel do atleta: status da inscrição, próxima sessão, notícias e perfil |
+| `/atletas/painel` | Painel do atleta: status, agenda completa, notícias e perfil editável com foto e história |
 | `/admin/login` | Login da coordenação |
-| `/admin` | Visão geral: KPIs, inscrições por mês, distribuição por nível e últimos cadastros |
-| `/admin/atletas` | CRUD de atletas, aprovação rápida, filtros, busca e exportação CSV |
+| `/admin` | Visão geral: KPIs, inscrições por mês, distribuição por categoria e últimos cadastros |
+| `/admin/atletas` | CRUD de atletas, aprovação rápida, busca, filtro por categoria e exportação CSV |
 | `/admin/noticias` | CRUD de notícias, rascunhos, destaque e publicação |
-| `/admin/agenda` | CRUD da agenda de treinos e eventos |
+| `/admin/agenda` | CRUD da agenda, chamada de presença e atalho de treino de sábado |
 | `/creditos` | Créditos e licenças das imagens |
 
 ## Acessos de demonstração
@@ -74,15 +74,18 @@ lib/
   store.tsx             "banco" local com Context API + localStorage
   auth.tsx              sessão de atleta/admin
   schemas/atleta.ts     validação Zod (condicional para menores)
+  categorias.ts         14 categorias de atleta, rótulos e agrupamentos
+  migracao.ts           migração do banco local v2 para v3
   format.ts             datas, status, categorias e iniciais
 ```
 
 ### Persistência atual
 
-Os dados são persistidos em **localStorage** (`vpm:db:v2`), o que permite
-demonstrar o fluxo completo — o admin publica uma notícia e ela aparece na hora
-no painel do atleta — sem backend. Para produção, basta substituir as funções
-de `lib/store.tsx` por chamadas a uma API.
+Os dados são persistidos em **localStorage** (`vpm:db:v3`), com migração
+automática do banco anterior (`vpm:db:v2`). Isso permite demonstrar o fluxo
+completo — o admin publica uma notícia ou registra uma chamada e o atleta vê a
+atualização — sem backend. Para produção, basta substituir as funções de
+`lib/store.tsx` por chamadas a uma API.
 
 Sugestões de backend, em ordem de esforço:
 
@@ -90,10 +93,19 @@ Sugestões de backend, em ordem de esforço:
 2. **API Routes + Prisma/Postgres** — mantém tudo no ecossistema Next.js.
 3. **Backend Laravel existente** — expor endpoints REST e trocar o store.
 
+## Categorias e chamada
+
+O cadastro usa 14 categorias: Profissional, Sub12, Sub14, Sub16, Sub18, Open e
+40+, nas versões masculino e feminino. O admin pode filtrar atletas por
+categoria e registrar a chamada de cada evento; o atalho **Treino de sábado**
+cria o próximo encontro já com a data preenchida. A chamada fica salva no
+evento e é reaberta com as presenças anteriores.
+
 ## Segurança e LGPD
 
-O cadastro coleta CPF, RG e CadÚnico de crianças e adolescentes. Antes de ir
-para produção é obrigatório:
+O cadastro coleta CPF, CadÚnico, telefone e, para menores, nome/telefone/CPF
+dos responsáveis. O perfil do atleta também pode guardar foto e história. Antes
+de ir para produção é obrigatório:
 
 - autenticação real com hash de senha (bcrypt/Argon2), nunca senha em texto puro;
 - proteção das rotas `/admin` no servidor (middleware), não só no cliente;
@@ -117,18 +129,27 @@ Visão geral do admin.
 
 ## Imagens
 
-As fotografias são de arquivo (Wikimedia Commons) e estão creditadas em
-`/creditos`. Para publicar o site oficial, substitua os arquivos de
-`public/img/` pelas fotos reais do projeto mantendo os mesmos nomes — ou ajuste
-os caminhos nos componentes.
+As fotos da Ponte dos Ingleses vêm do Wikimedia Commons. As imagens de pódios,
+treinos, celebrações e comunidade fazem parte do acervo do projeto e de
+publicações de atletas e parceiros no Instagram (@vencedorespontemetalica).
+Todos os créditos estão em `/creditos`.
+
+Para trocar as fotos, substitua os arquivos de `public/img/` mantendo os mesmos
+nomes — ou ajuste os caminhos nos componentes.
 
 - Logotipo: `public/img/logo.png`
 - Hero / Ponte dos Ingleses ao anoitecer: `public/img/hero.jpg` — Claudney Neves, CC BY-SA 4.0
 - Ponte dos Ingleses de dia: `public/img/ponte.jpg` — Governo Federal Brasileiro, CC BY-SA 3.0
-- Ponte dos Ingleses ao pôr do sol: `public/img/iracema.jpg` — GLandovsky, CC BY-SA 4.0
-- Treino de bodyboard: `public/img/treino.jpg` — Bengt Nyman, CC BY 2.0
-- Bodyboard na onda: `public/img/acao.jpg` — Dedekindr, CC BY-SA 3.0
-- Comunidade: `public/img/comunidade.jpg` — kevinmcgill, CC BY-SA 2.0
+- Pódio do projeto: `public/img/podio-treino.jpg` — acervo do projeto no Instagram
+- Pódio do circuito: `public/img/podio-conquistas.jpg` — acervo do projeto no Instagram
+- Atleta celebrando: `public/img/vencedores.jpg` — acervo do projeto no Instagram
+- Bodyboard na onda: `public/img/treino-onda.jpg` — Thelipe Lima / Paulo Sucesso
+- Celebração da equipe: `public/img/galeria-competicao.jpg` — acervo do projeto no Instagram
+- Atleta ao pôr do sol: `public/img/galeria-atleta.jpg` — acervo do projeto no Instagram
+- Comunidade do projeto: `public/img/comunidade.jpg` — acervo do projeto no Instagram
+- Iracema / atleta sob a Ponte: `public/img/iracema.jpg` — acervo do projeto no Instagram
+- Treino na areia: `public/img/treino.jpg` — acervo do projeto no Instagram
+- A caminho do mar: `public/img/acao.jpg` — acervo do projeto no Instagram
 
 ## Deploy
 

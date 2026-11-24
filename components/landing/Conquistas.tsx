@@ -6,22 +6,22 @@ const destaques = [
     titulo: "Pódios",
     texto:
       "Atletas do projeto representando Iracema em competições e vivendo a experiência de competir.",
-    imagem: "/img/acao.jpg",
-    alt: "Bodyboarder em manobra na onda",
+    imagem: "/img/podio-conquistas.jpg",
+    alt: "Três atletas do projeto no pódio com troféus e pranchas de bodyboard",
   },
   {
     titulo: "Vencedores(as)",
     texto:
       "Histórias de crianças e jovens que encontraram no mar um lugar de pertencimento e novas escolhas.",
-    imagem: "/img/comunidade.jpg",
-    alt: "Bodyboarders com pranchas no pôr do sol",
+    imagem: "/img/vencedores.jpg",
+    alt: "Atleta do projeto celebrando a vitória na beira do mar",
   },
   {
     titulo: "Treinos",
     texto:
       "Disciplina, técnica e cuidado todos os dias, com equipamentos e acompanhamento de perto.",
-    imagem: "/img/treino.jpg",
-    alt: "Crianças com bodyboards durante o treino",
+    imagem: "/img/treino-onda.jpg",
+    alt: "Atleta do projeto descendo uma onda de bodyboard",
   },
 ];
 

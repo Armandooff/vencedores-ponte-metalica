@@ -4,17 +4,23 @@ import { useEffect, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import { useDados } from "@/lib/store";
 import { calcularIdade, ehMenorDeIdade } from "@/lib/idade";
+import AvatarAtleta from "@/components/ui/AvatarAtleta";
 import {
   formatarDataCurta,
-  iniciais,
   mascararCpf,
   mascararTelefone,
-  rotuloModalidade,
-  rotuloNivel,
   rotuloStatus,
   classesStatus,
 } from "@/lib/format";
-import type { Atleta, Modalidade, Nivel, StatusAtleta } from "@/lib/types";
+import {
+  opcoesCategoriaAtleta,
+  rotuloCategoriaAtleta,
+} from "@/lib/categorias";
+import type {
+  Atleta,
+  CategoriaAtleta,
+  StatusAtleta,
+} from "@/lib/types";
 import { Pencil, Trash, X } from "@/components/ui/Icons";
 
 type Modo = "criar" | "editar" | "ver";
@@ -26,22 +32,20 @@ type FormAtleta = {
   telefone: string;
   dataNascimento: string;
   cpf: string;
-  rg: string;
   cep: string;
   bairro: string;
   endereco: string;
   numero: string;
   cadUnico: string;
   codJuv: string;
-  modalidade: Modalidade;
-  nivel: Nivel;
+  categoria: CategoriaAtleta | "";
   status: StatusAtleta;
   nomeMae: string;
   nomePai: string;
   telefoneMae: string;
   telefonePai: string;
-  rgMae: string;
-  rgPai: string;
+  cpfMae: string;
+  cpfPai: string;
 };
 
 function paraForm(atleta?: Atleta): FormAtleta {
@@ -52,22 +56,20 @@ function paraForm(atleta?: Atleta): FormAtleta {
     telefone: atleta?.telefone ?? "",
     dataNascimento: atleta?.dataNascimento ?? "",
     cpf: atleta?.cpf ?? "",
-    rg: atleta?.rg ?? "",
     cep: atleta?.cep ?? "",
     bairro: atleta?.bairro ?? "",
     endereco: atleta?.endereco ?? "",
     numero: atleta?.numero ?? "",
     cadUnico: atleta?.cadUnico ?? "",
     codJuv: atleta?.codJuv ?? "",
-    modalidade: atleta?.modalidade ?? "bodyboard",
-    nivel: atleta?.nivel ?? "iniciante",
+    categoria: atleta?.categoria ?? "",
     status: atleta?.status ?? "pendente",
     nomeMae: atleta?.nomeMae ?? "",
     nomePai: atleta?.nomePai ?? "",
     telefoneMae: atleta?.telefoneMae ?? "",
     telefonePai: atleta?.telefonePai ?? "",
-    rgMae: atleta?.rgMae ?? "",
-    rgPai: atleta?.rgPai ?? "",
+    cpfMae: atleta?.cpfMae ?? "",
+    cpfPai: atleta?.cpfPai ?? "",
   };
 }
 
@@ -120,6 +122,11 @@ export default function ModalAtleta({
       setErro("Informe a data de nascimento.");
       return;
     }
+    const categoria = form.categoria;
+    if (!categoria) {
+      setErro("Escolha a categoria do atleta.");
+      return;
+    }
     const duplicado = db.atletas.some(
       (a) =>
         a.email.toLowerCase() === form.email.trim().toLowerCase() &&
@@ -132,6 +139,7 @@ export default function ModalAtleta({
 
     const dados = {
       ...form,
+      categoria,
       email: form.email.trim().toLowerCase(),
       nomeCompleto: form.nomeCompleto.trim(),
     };
@@ -154,9 +162,12 @@ export default function ModalAtleta({
     return (
       <Modal open onClose={onClose} title="Ficha do atleta">
         <div className="flex items-center gap-4">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-sun font-display text-xl text-ink">
-            {iniciais(atleta.nomeCompleto)}
-          </span>
+          <AvatarAtleta
+            nome={atleta.nomeCompleto}
+            foto={atleta.foto}
+            className="h-14 w-14"
+            sizes="56px"
+          />
           <div className="min-w-0">
             <p className="font-display text-xl uppercase leading-tight text-ink">
               {atleta.nomeCompleto}
@@ -181,10 +192,13 @@ export default function ModalAtleta({
             } anos${ehMenorDeIdade(atleta.dataNascimento) ? " (menor)" : ""}`}
           />
           <Dado rotulo="CPF" valor={mascararCpf(atleta.cpf)} />
-          <Dado rotulo="RG" valor={atleta.rg || "—"} />
           <Dado
-            rotulo="Modalidade"
-            valor={`${rotuloModalidade[atleta.modalidade]} · ${rotuloNivel[atleta.nivel]}`}
+            rotulo="Categoria"
+            valor={
+              atleta.categoria
+                ? rotuloCategoriaAtleta[atleta.categoria]
+                : "A definir"
+            }
           />
           <Dado rotulo="Cadastro" valor={formatarDataCurta(atleta.criadoEm)} />
           <Dado
@@ -206,6 +220,26 @@ export default function ModalAtleta({
                       .join(" · ")}
                   </span>
                 )}
+                {(atleta.cpfMae || atleta.cpfPai) && (
+                  <span className="mt-1 block text-xs text-ink/60">
+                    {[
+                      atleta.cpfMae ? `CPF mãe: ${mascararCpf(atleta.cpfMae)}` : "",
+                      atleta.cpfPai ? `CPF pai: ${mascararCpf(atleta.cpfPai)}` : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+          {atleta.historia && (
+            <div className="sm:col-span-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-ink/60">
+                Minha história
+              </p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-ink/70">
+                {atleta.historia}
               </p>
             </div>
           )}
@@ -305,30 +339,23 @@ export default function ModalAtleta({
                 placeholder="Somente números"
               />
             </Campo>
-            <Campo label="RG">
-              <input
-                value={form.rg}
-                onChange={(e) => definir("rg", e.target.value)}
-                className="input"
-              />
-            </Campo>
-            <Campo label="Modalidade">
-              <div className="input flex items-center justify-between bg-ink/[0.03]">
-                <span className="font-semibold text-ink">Bodyboard</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-ink/45">
-                  Única modalidade
-                </span>
-              </div>
-            </Campo>
-            <Campo label="Nível">
+            <Campo label="Categoria">
               <select
-                value={form.nivel}
-                onChange={(e) => definir("nivel", e.target.value as Nivel)}
+                value={form.categoria}
+                onChange={(e) =>
+                  definir(
+                    "categoria",
+                    e.target.value as FormAtleta["categoria"]
+                  )
+                }
                 className="input"
               >
-                <option value="iniciante">Iniciante</option>
-                <option value="intermediario">Intermediário</option>
-                <option value="avancado">Avançado</option>
+                <option value="">Selecione a categoria</option>
+                {opcoesCategoriaAtleta.map((opcao) => (
+                  <option key={opcao.value} value={opcao.value}>
+                    {opcao.label}
+                  </option>
+                ))}
               </select>
             </Campo>
             <Campo label="Status da inscrição">
@@ -422,6 +449,22 @@ export default function ModalAtleta({
                 value={form.telefonePai}
                 onChange={(e) => definir("telefonePai", e.target.value)}
                 className="input"
+              />
+            </Campo>
+            <Campo label="CPF da mãe">
+              <input
+                value={form.cpfMae}
+                onChange={(e) => definir("cpfMae", e.target.value)}
+                className="input"
+                placeholder="000.000.000-00"
+              />
+            </Campo>
+            <Campo label="CPF do pai">
+              <input
+                value={form.cpfPai}
+                onChange={(e) => definir("cpfPai", e.target.value)}
+                className="input"
+                placeholder="000.000.000-00"
               />
             </Campo>
           </div>

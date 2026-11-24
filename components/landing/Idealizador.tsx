@@ -6,8 +6,8 @@ export default function Idealizador() {
   return (
     <section id="idealizador" className="relative isolate overflow-hidden bg-ink text-white">
       <Image
-        src="/img/comunidade.jpg"
-        alt="Bodyboarders na praia ao pôr do sol"
+        src="/img/iracema.jpg"
+        alt="Atleta do projeto sob as pilastras da Ponte dos Ingleses"
         fill
         sizes="100vw"
         className="object-cover object-center opacity-60"

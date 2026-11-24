@@ -14,33 +14,33 @@ import {
 
 const fotos = [
   {
-    src: "/img/ponte.jpg",
-    alt: "Ponte dos Ingleses na Praia de Iracema",
-    legenda: "Ponte dos Ingleses, nosso ponto de encontro",
+    src: "/img/galeria-competicao.jpg",
+    alt: "Atletas e famílias do projeto celebrando com a campeã na água",
+    legenda: "Celebração no circuito",
     classe: "md:col-span-2 md:row-span-2",
   },
   {
-    src: "/img/treino.jpg",
-    alt: "Crianças com bodyboards na espuma do mar",
-    legenda: "Aprendizado na beira do mar",
-    classe: "md:col-span-1 md:row-span-1",
-  },
-  {
     src: "/img/comunidade.jpg",
-    alt: "Bodyboarders com pranchas no pôr do sol",
-    legenda: "A comunidade no fim da tarde",
+    alt: "Crianças, jovens e famílias do projeto reunidos à noite",
+    legenda: "A comunidade do projeto",
     classe: "md:col-span-1 md:row-span-1",
   },
   {
     src: "/img/acao.jpg",
-    alt: "Bodyboarder deslizando na onda",
-    legenda: "Leitura de onda",
+    alt: "Atletas do projeto descendo a escada com pranchas de bodyboard",
+    legenda: "A caminho do mar",
     classe: "md:col-span-1 md:row-span-1",
   },
   {
-    src: "/img/iracema.jpg",
-    alt: "Ponte dos Ingleses ao pôr do sol",
-    legenda: "Iracema, nosso quintal",
+    src: "/img/galeria-atleta.jpg",
+    alt: "Atleta do projeto observando o mar ao pôr do sol em Iracema",
+    legenda: "Fim de tarde em Iracema",
+    classe: "md:col-span-1 md:row-span-1",
+  },
+  {
+    src: "/img/galeria-celebracao.jpg",
+    alt: "Atletas do projeto comemorando na beira do mar",
+    legenda: "Time que se abraça",
     classe: "md:col-span-1 md:row-span-1",
   },
 ];

@@ -3,17 +3,19 @@
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import ModalAtleta from "./ModalAtleta";
+import AvatarAtleta from "@/components/ui/AvatarAtleta";
 import { useDados } from "@/lib/store";
 import { calcularIdade, ehMenorDeIdade } from "@/lib/idade";
 import {
   classesStatus,
   formatarDataCurta,
-  iniciais,
-  rotuloModalidade,
-  rotuloNivel,
   rotuloStatus,
 } from "@/lib/format";
-import type { Atleta, StatusAtleta } from "@/lib/types";
+import {
+  opcoesCategoriaAtleta,
+  rotuloCategoriaOuPendente,
+} from "@/lib/categorias";
+import type { Atleta, CategoriaAtleta, StatusAtleta } from "@/lib/types";
 import {
   Check,
   ChevronLeft,
@@ -39,6 +41,9 @@ export default function GerenciarAtletas() {
   const { db, atualizarAtleta, excluirAtleta } = useDados();
   const [busca, setBusca] = useState("");
   const [status, setStatus] = useState<"todos" | StatusAtleta>("todos");
+  const [categoria, setCategoria] = useState<
+    "todas" | CategoriaAtleta | "sem-categoria"
+  >("todas");
   const [pagina, setPagina] = useState(1);
   const [modal, setModal] = useState<ModalEstado>(null);
   const [excluir, setExcluir] = useState<Atleta | null>(null);
@@ -59,6 +64,11 @@ export default function GerenciarAtletas() {
     const termo = busca.trim().toLowerCase();
     return [...db.atletas]
       .filter((a) => status === "todos" || a.status === status)
+      .filter((a) => {
+        if (categoria === "todas") return true;
+        if (categoria === "sem-categoria") return !a.categoria;
+        return a.categoria === categoria;
+      })
       .filter(
         (a) =>
           !termo ||
@@ -67,7 +77,7 @@ export default function GerenciarAtletas() {
           a.cpf.includes(termo.replace(/\D/g, ""))
       )
       .sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
-  }, [db.atletas, busca, status]);
+  }, [db.atletas, busca, status, categoria]);
 
   const totalPaginas = Math.max(Math.ceil(filtrados.length / POR_PAGINA), 1);
   const paginaAtual = Math.min(pagina, totalPaginas);
@@ -76,7 +86,7 @@ export default function GerenciarAtletas() {
     paginaAtual * POR_PAGINA
   );
 
-  useEffect(() => setPagina(1), [busca, status]);
+  useEffect(() => setPagina(1), [busca, status, categoria]);
 
   const exportarCsv = () => {
     const cabecalho = [
@@ -85,8 +95,7 @@ export default function GerenciarAtletas() {
       "Nascimento",
       "Idade",
       "Telefone",
-      "Modalidade",
-      "Nível",
+      "Categoria",
       "Status",
       "Cadastro",
     ];
@@ -96,8 +105,7 @@ export default function GerenciarAtletas() {
       a.dataNascimento,
       String(calcularIdade(a.dataNascimento)),
       a.telefone,
-      rotuloModalidade[a.modalidade],
-      rotuloNivel[a.nivel],
+      rotuloCategoriaOuPendente(a.categoria),
       rotuloStatus[a.status],
       a.criadoEm,
     ]);
@@ -175,6 +183,27 @@ export default function GerenciarAtletas() {
               <option value="aprovado">Aprovados</option>
               <option value="reprovado">Reprovados</option>
             </select>
+            <select
+              value={categoria}
+              onChange={(e) =>
+                setCategoria(
+                  e.target.value as
+                    | "todas"
+                    | CategoriaAtleta
+                    | "sem-categoria"
+                )
+              }
+              className="input !w-auto min-w-[190px]"
+              aria-label="Filtrar por categoria"
+            >
+              <option value="todas">Todas as categorias</option>
+              {opcoesCategoriaAtleta.map((opcao) => (
+                <option key={opcao.value} value={opcao.value}>
+                  {opcao.label}
+                </option>
+              ))}
+              <option value="sem-categoria">Sem categoria (antigos)</option>
+            </select>
           </div>
         </div>
 
@@ -184,7 +213,7 @@ export default function GerenciarAtletas() {
               <tr className="bg-ink/[0.02] text-left text-[10px] uppercase tracking-wider text-ink/60">
                 <th className="px-4 py-3 font-semibold">Atleta</th>
                 <th className="px-3 py-3 font-semibold">Idade</th>
-                <th className="px-3 py-3 font-semibold">Nível</th>
+                <th className="px-3 py-3 font-semibold">Categoria</th>
                 <th className="px-3 py-3 font-semibold">Status</th>
                 <th className="px-3 py-3 font-semibold">Cadastro</th>
                 <th className="px-4 py-3 text-right font-semibold">Ações</th>
@@ -198,9 +227,11 @@ export default function GerenciarAtletas() {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink/5 text-[11px] font-bold text-ink/60">
-                        {iniciais(atleta.nomeCompleto)}
-                      </span>
+                      <AvatarAtleta
+                        nome={atleta.nomeCompleto}
+                        foto={atleta.foto}
+                        className="h-9 w-9 text-[11px]"
+                      />
                       <div className="min-w-0">
                         <p className="truncate font-semibold text-ink">
                           {atleta.nomeCompleto}
@@ -221,7 +252,7 @@ export default function GerenciarAtletas() {
                   </td>
                   <td className="px-3 py-3">
                     <p className="text-xs font-medium text-ink/70">
-                      {rotuloNivel[atleta.nivel]}
+                      {rotuloCategoriaOuPendente(atleta.categoria)}
                     </p>
                   </td>
                   <td className="px-3 py-3">

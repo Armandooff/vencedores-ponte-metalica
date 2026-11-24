@@ -1,9 +1,4 @@
-import type {
-  CategoriaNoticia,
-  Modalidade,
-  Nivel,
-  StatusAtleta,
-} from "./types";
+import type { CategoriaNoticia, StatusAtleta } from "./types";
 
 /** Data de hoje no fuso local, no formato YYYY-MM-DD. */
 export function hojeISO() {
@@ -71,15 +66,14 @@ export const rotuloStatus: Record<StatusAtleta, string> = {
   reprovado: "Reprovado",
 };
 
-export const rotuloModalidade: Record<Modalidade, string> = {
-  bodyboard: "Bodyboard",
-};
-
-export const rotuloNivel: Record<Nivel, string> = {
-  iniciante: "Iniciante",
-  intermediario: "Intermediário",
-  avancado: "Avançado",
-};
+export function proximoSabadoISO(base = new Date()) {
+  const data = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  const dias = (6 - data.getDay() + 7) % 7;
+  data.setDate(data.getDate() + (dias === 0 ? 7 : dias));
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+  return `${data.getFullYear()}-${mes}-${dia}`;
+}
 
 export const rotuloCategoria: Record<CategoriaNoticia, string> = {
   Notícia: "Notícia",

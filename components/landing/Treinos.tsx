@@ -58,8 +58,8 @@ export default function Treinos() {
             <Reveal delay={120}>
               <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-[2rem]">
                 <Image
-                  src="/img/treino.jpg"
-                  alt="Crianças com bodyboards na beira do mar"
+                  src="/img/podio-treino.jpg"
+                  alt="Atletas do projeto no pódio com troféus e pranchas de bodyboard"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"

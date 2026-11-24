@@ -23,30 +23,7 @@ const commons = [
     licenca: "CC BY-SA 3.0",
     href: "https://commons.wikimedia.org/wiki/File:Ponte_dos_Ingleses_(2).jpg",
   },
-  {
-    titulo: "Ponte dos Ingleses ao pôr do sol",
-    autor: "GLandovsky",
-    licenca: "CC BY-SA 4.0",
-    href: "https://commons.wikimedia.org/wiki/File:Ponte_dos_Ingleses_em_Fortaleza_05.jpg",
-  },
-  {
-    titulo: "Treino de bodyboard",
-    autor: "Bengt Nyman",
-    licenca: "CC BY 2.0",
-    href: "https://commons.wikimedia.org/wiki/File:Bodyboarding_2_2006.jpg",
-  },
-  {
-    titulo: "Bodyboard na onda",
-    autor: "Dedekindr",
-    licenca: "CC BY-SA 3.0",
-    href: "https://commons.wikimedia.org/wiki/File:Body-boarding_at_Baggies_beach.jpg",
-  },
-  {
-    titulo: "Comunidade no pôr do sol",
-    autor: "kevinmcgill",
-    licenca: "CC BY-SA 2.0",
-    href: "https://commons.wikimedia.org/wiki/File:Bodyboarders_(4596943453).jpg",
-  },
+
 ];
 
 export default function PaginaCreditos() {
@@ -68,10 +45,10 @@ export default function PaginaCreditos() {
               <span className="text-sun">licenças.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/60">
-              O site usa fotografias de arquivo sob licenças livres para
-              ilustrar a Ponte dos Ingleses e o bodyboard. As imagens oficiais
-              do Vencedores da Ponte Metálica podem substituir os arquivos a
-              qualquer momento.
+              O site combina fotografias da Ponte dos Ingleses sob licenças
+              livres com imagens de pódios, treinos e celebrações do acervo do
+              projeto e de atletas e parceiros publicadas no Instagram do
+              Vencedores da Ponte Metálica.
             </p>
           </div>
         </section>
@@ -115,20 +92,34 @@ export default function PaginaCreditos() {
               Imagens do projeto
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-ink/65">
-              O logotipo e as fotografias oficiais do projeto são de uso
-              exclusivo do Vencedores da Ponte Metálica. Para enviar novas
-              imagens ou solicitar a remoção de algum conteúdo, fale com a
-              coordenação pelo{" "}
+              O logotipo e as fotografias de treinos, pódios, celebrações e
+              comunidade fazem parte do acervo do Vencedores da Ponte Metálica e
+              de publicações de atletas e parceiros no{" "}
               <a
                 href="https://www.instagram.com/vencedorespontemetalica/"
                 target="_blank"
                 rel="noreferrer"
                 className="font-semibold text-sun-700 underline-offset-2 hover:underline"
               >
-                Instagram oficial
+                Instagram do projeto
               </a>
-              .
+              . Para enviar novas imagens ou solicitar a remoção de algum
+              conteúdo, fale com a coordenação do projeto.
             </p>
+            <ul className="mt-5 space-y-2 border-t border-ink/10 pt-5 text-sm leading-relaxed text-ink/65">
+              <li>
+                <strong className="font-semibold text-ink">
+                  Pódios e celebrações:
+                </strong>{" "}
+                publicações do projeto e de atletas e parceiros no Instagram.
+              </li>
+              <li>
+                <strong className="font-semibold text-ink">
+                  Bodyboard na onda:
+                </strong>{" "}
+                Thelipe Lima / Paulo Sucesso.
+              </li>
+            </ul>
           </div>
         </section>
       </main>

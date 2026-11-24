@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from "react";
 import Modal from "@/components/ui/Modal";
+import ChamadaEvento from "./ChamadaEvento";
 import ModalEvento from "./ModalEvento";
 import { useDados } from "@/lib/store";
-import { formatarData, hojeISO } from "@/lib/format";
+import { formatarData, hojeISO, proximoSabadoISO } from "@/lib/format";
 import type { Evento } from "@/lib/types";
 import {
   Calendar,
+  Check,
   Clock,
   MapPin,
   Pencil,
@@ -19,7 +21,10 @@ import {
 export default function GerenciarAgenda() {
   const { db, atualizarEvento, excluirEvento } = useDados();
   const [criando, setCriando] = useState(false);
+  const [dataInicial, setDataInicial] = useState<string | undefined>();
+  const [tituloInicial, setTituloInicial] = useState<string | undefined>();
   const [editando, setEditando] = useState<Evento | null>(null);
+  const [chamada, setChamada] = useState<Evento | null>(null);
   const [excluir, setExcluir] = useState<Evento | null>(null);
 
   const hoje = hojeISO();
@@ -32,6 +37,18 @@ export default function GerenciarAgenda() {
   const proximos = eventos.filter((e) => e.data >= hoje && e.ativo).length;
   const ativos = eventos.filter((e) => e.ativo).length;
 
+  const abrirNovo = (sabado = false) => {
+    setDataInicial(sabado ? proximoSabadoISO() : undefined);
+    setTituloInicial(sabado ? "Treino de bodyboard · Sábado" : undefined);
+    setCriando(true);
+  };
+
+  const fecharNovo = () => {
+    setCriando(false);
+    setDataInicial(undefined);
+    setTituloInicial(undefined);
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -40,17 +57,26 @@ export default function GerenciarAgenda() {
             Agenda do projeto
           </h2>
           <p className="mt-2 text-sm text-ink/65">
-            Organize treinos e encontros. O próximo evento aparece no painel dos
-            atletas.
+            Organize treinos, faça a chamada e mantenha todos os eventos ativos
+            visíveis no painel dos atletas.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setCriando(true)}
-          className="btn-sun w-fit !px-4 !py-2.5 !text-[11px]"
-        >
-          <Plus size={15} /> Novo evento
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => abrirNovo(true)}
+            className="btn-ghost-dark w-fit !px-4 !py-2.5 !text-[11px]"
+          >
+            <Calendar size={15} /> Treino de sábado
+          </button>
+          <button
+            type="button"
+            onClick={() => abrirNovo()}
+            className="btn-sun w-fit !px-4 !py-2.5 !text-[11px]"
+          >
+            <Plus size={15} /> Novo evento
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -88,6 +114,10 @@ export default function GerenciarAgenda() {
             .format(data)
             .replace(".", "");
           const passado = evento.data < hoje;
+          const presentes = Object.values(evento.presencas ?? {}).filter(
+            (presenca) => presenca === "presente"
+          ).length;
+          const chamadaFeita = Boolean(evento.presencas);
 
           return (
             <div
@@ -105,8 +135,16 @@ export default function GerenciarAgenda() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-sun-700">
-                    {evento.turma}
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                      chamadaFeita
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-sun/10 text-sun-700"
+                    }`}
+                  >
+                    {chamadaFeita
+                      ? `Chamada · ${presentes} presente${presentes === 1 ? "" : "s"}`
+                      : "Chamada pendente"}
                   </span>
                   {passado && (
                     <span className="rounded-full bg-ink/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ink/60">
@@ -133,7 +171,15 @@ export default function GerenciarAgenda() {
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setChamada(evento)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition hover:border-sun hover:text-sun-700"
+                  title="Fazer chamada"
+                >
+                  <Check size={13} /> Fazer chamada
+                </button>
                 <button
                   type="button"
                   onClick={() =>
@@ -192,9 +238,18 @@ export default function GerenciarAgenda() {
         )}
       </div>
 
-      {criando && <ModalEvento onClose={() => setCriando(false)} />}
+      {criando && (
+        <ModalEvento
+          dataInicial={dataInicial}
+          tituloInicial={tituloInicial}
+          onClose={fecharNovo}
+        />
+      )}
       {editando && (
         <ModalEvento evento={editando} onClose={() => setEditando(null)} />
+      )}
+      {chamada && (
+        <ChamadaEvento evento={chamada} onClose={() => setChamada(null)} />
       )}
 
       <Modal

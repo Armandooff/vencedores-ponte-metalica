@@ -7,10 +7,13 @@ import {
   classesStatus,
   formatarDataCurta,
   hojeISO,
-  iniciais,
-  rotuloNivel,
   rotuloStatus,
 } from "@/lib/format";
+import {
+  gruposCategoriaAtleta,
+  rotuloCategoriaOuPendente,
+} from "@/lib/categorias";
+import AvatarAtleta from "@/components/ui/AvatarAtleta";
 import Modal from "@/components/ui/Modal";
 import {
   ArrowRight,
@@ -64,13 +67,17 @@ export default function VisaoGeral() {
     .sort((a, b) => b.publicadoEm.localeCompare(a.publicadoEm))
     .slice(0, 4);
 
-  const niveis = (["iniciante", "intermediario", "avancado"] as const).map(
-    (nivel) => ({
-      nivel,
-      total: db.atletas.filter((a) => a.nivel === nivel).length,
-    })
-  );
-  const totalNivel = Math.max(db.atletas.length, 1);
+  const distribuicao = gruposCategoriaAtleta.map((grupo) => {
+    const masculino = db.atletas.filter(
+      (a) => a.categoria === grupo.categorias[0]
+    ).length;
+    const feminino = db.atletas.filter(
+      (a) => a.categoria === grupo.categorias[1]
+    ).length;
+    return { ...grupo, masculino, feminino, total: masculino + feminino };
+  });
+  const semCategoria = db.atletas.filter((a) => !a.categoria).length;
+  const totalCategoria = Math.max(db.atletas.length, 1);
 
   const dataFormatada = new Intl.DateTimeFormat("pt-BR", {
     weekday: "long",
@@ -227,29 +234,46 @@ export default function VisaoGeral() {
           <h3 className="font-display text-xl uppercase leading-none text-ink">
             Distribuição
           </h3>
-          <p className="mt-1 text-xs text-ink/60">Visão por nível e status</p>
+          <p className="mt-1 text-xs text-ink/60">
+            Visão por categoria e status
+          </p>
 
-          <div className="mt-6 space-y-5">
-            {niveis.map(({ nivel, total }, i) => (
-              <div key={nivel}>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-ink/70">
-                    {rotuloNivel[nivel]}
+          <div className="mt-6 space-y-4">
+            {distribuicao.map(({ id, rotulo, masculino, feminino, total }, i) => (
+              <div key={id}>
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <span className="font-semibold text-ink/70">{rotulo}</span>
+                  <span className="text-[10px] text-ink/50">
+                    M {masculino} · F {feminino}
                   </span>
-                  <span className="font-bold text-ink">{total}</span>
+                  <span className="w-4 text-right font-bold text-ink">
+                    {total}
+                  </span>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-ink/10">
                   <div
                     className={`h-full rounded-full ${
-                      i === 0 ? "bg-sun" : i === 1 ? "bg-sun/60" : "bg-ink/60"
+                      i % 3 === 0
+                        ? "bg-sun"
+                        : i % 3 === 1
+                          ? "bg-sun/60"
+                          : "bg-ink/60"
                     }`}
                     style={{
-                      width: `${Math.round((total / totalNivel) * 100)}%`,
+                      width: `${Math.round((total / totalCategoria) * 100)}%`,
                     }}
                   />
                 </div>
               </div>
             ))}
+            {semCategoria > 0 && (
+              <div className="flex items-center justify-between border-t border-ink/10 pt-3 text-xs">
+                <span className="font-semibold text-amber-700">
+                  A definir (cadastros antigos)
+                </span>
+                <span className="font-bold text-ink">{semCategoria}</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 space-y-2 border-t border-ink/10 pt-5">
@@ -303,7 +327,7 @@ export default function VisaoGeral() {
               <thead>
                 <tr className="border-b border-ink/5 bg-ink/[0.02] text-left text-[10px] uppercase tracking-wider text-ink/60">
                   <th className="px-5 py-3 font-semibold">Atleta</th>
-                  <th className="px-3 py-3 font-semibold">Nível</th>
+                  <th className="px-3 py-3 font-semibold">Categoria</th>
                   <th className="px-3 py-3 font-semibold">Status</th>
                   <th className="px-5 py-3 text-right font-semibold">Cadastro</th>
                 </tr>
@@ -316,9 +340,11 @@ export default function VisaoGeral() {
                   >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink/5 text-[11px] font-bold text-ink/60">
-                          {iniciais(atleta.nomeCompleto)}
-                        </span>
+                        <AvatarAtleta
+                          nome={atleta.nomeCompleto}
+                          foto={atleta.foto}
+                          className="h-9 w-9 text-[11px]"
+                        />
                         <div>
                           <p className="font-semibold text-ink">
                             {atleta.nomeCompleto}
@@ -330,7 +356,7 @@ export default function VisaoGeral() {
                       </div>
                     </td>
                     <td className="px-3 py-3 text-xs text-ink/60">
-                      {rotuloNivel[atleta.nivel]}
+                      {rotuloCategoriaOuPendente(atleta.categoria)}
                     </td>
                     <td className="px-3 py-3">
                       <span

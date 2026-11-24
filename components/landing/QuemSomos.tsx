@@ -40,7 +40,7 @@ export default function QuemSomos() {
               <div className="relative aspect-[4/3]">
                 <Image
                   src="/img/treino.jpg"
-                  alt="Crianças aprendendo bodyboard na beira do mar"
+                  alt="Atletas do projeto com pranchas de bodyboard ao pôr do sol"
                   fill
                   sizes="220px"
                   className="object-cover"

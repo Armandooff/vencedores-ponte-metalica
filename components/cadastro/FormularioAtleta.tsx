@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IMaskInput } from "react-imask";
 import { atletaSchema, AtletaFormData } from "@/lib/schemas/atleta";
+import { opcoesCategoriaAtleta } from "@/lib/categorias";
 import { calcularIdade, ehMenorDeIdade } from "@/lib/idade";
 import { useDados } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
@@ -63,8 +64,6 @@ export default function FormularioAtleta() {
   } = useForm<AtletaFormData>({
     resolver: zodResolver(atletaSchema),
     defaultValues: {
-      modalidade: "bodyboard",
-      nivel: "iniciante",
       consentimento: false,
     },
   });
@@ -290,43 +289,27 @@ export default function FormularioAtleta() {
             {errors.cpf && <p className="erro">{errors.cpf.message}</p>}
           </div>
           <div>
-            <label className="field-label" htmlFor="rg">
-              RG
+            <label className="field-label" htmlFor="categoria">
+              Categoria
             </label>
-            <input
-              id="rg"
-              placeholder="Número do RG"
+            <select
+              id="categoria"
               className="input"
-              {...register("rg")}
-            />
-            {errors.rg && <p className="erro">{errors.rg.message}</p>}
-          </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <span className="field-label">Modalidade</span>
-            <div className="input flex items-center justify-between bg-ink/[0.03]">
-              <span className="font-semibold text-ink">Bodyboard</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-ink/45">
-                Única modalidade
-              </span>
-            </div>
-            <input type="hidden" {...register("modalidade")} />
-            {errors.modalidade && (
-              <p className="erro">{errors.modalidade.message}</p>
-            )}
-          </div>
-          <div>
-            <label className="field-label" htmlFor="nivel">
-              Nível
-            </label>
-            <select id="nivel" className="input" {...register("nivel")}>
-              <option value="iniciante">Iniciante</option>
-              <option value="intermediario">Intermediário</option>
-              <option value="avancado">Avançado</option>
+              defaultValue=""
+              {...register("categoria")}
+            >
+              <option value="" disabled>
+                Selecione a categoria
+              </option>
+              {opcoesCategoriaAtleta.map((opcao) => (
+                <option key={opcao.value} value={opcao.value}>
+                  {opcao.label}
+                </option>
+              ))}
             </select>
-            {errors.nivel && <p className="erro">{errors.nivel.message}</p>}
+            {errors.categoria && (
+              <p className="erro">{errors.categoria.message}</p>
+            )}
           </div>
         </div>
       </Secao>
@@ -477,18 +460,52 @@ export default function FormularioAtleta() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="field-label" htmlFor="rgMae">
-                RG da mãe
+              <label className="field-label" htmlFor="cpfMae">
+                CPF da mãe
               </label>
-              <input id="rgMae" className="input" {...register("rgMae")} />
-              {errors.rgMae && <p className="erro">{errors.rgMae.message}</p>}
+              <Controller
+                name="cpfMae"
+                control={control}
+                render={({ field }) => (
+                  <IMaskInput
+                    id="cpfMae"
+                    mask="000.000.000-00"
+                    value={field.value ?? ""}
+                    onAccept={(value: string) => field.onChange(value)}
+                    onBlur={field.onBlur}
+                    inputMode="numeric"
+                    placeholder="000.000.000-00"
+                    className="input"
+                  />
+                )}
+              />
+              {errors.cpfMae && (
+                <p className="erro">{errors.cpfMae.message}</p>
+              )}
             </div>
             <div>
-              <label className="field-label" htmlFor="rgPai">
-                RG do pai
+              <label className="field-label" htmlFor="cpfPai">
+                CPF do pai
               </label>
-              <input id="rgPai" className="input" {...register("rgPai")} />
-              {errors.rgPai && <p className="erro">{errors.rgPai.message}</p>}
+              <Controller
+                name="cpfPai"
+                control={control}
+                render={({ field }) => (
+                  <IMaskInput
+                    id="cpfPai"
+                    mask="000.000.000-00"
+                    value={field.value ?? ""}
+                    onAccept={(value: string) => field.onChange(value)}
+                    onBlur={field.onBlur}
+                    inputMode="numeric"
+                    placeholder="000.000.000-00"
+                    className="input"
+                  />
+                )}
+              />
+              {errors.cpfPai && (
+                <p className="erro">{errors.cpfPai.message}</p>
+              )}
             </div>
           </div>
         </div>

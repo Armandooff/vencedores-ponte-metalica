@@ -1,5 +1,11 @@
 import { z } from "zod";
+import { CATEGORIAS_ATLETA } from "@/lib/categorias";
 import { calcularIdade } from "@/lib/idade";
+
+const cpfOpcional = z
+  .string()
+  .optional()
+  .transform((valor) => valor?.replace(/\D/g, "") ?? "");
 
 const camposGeraisSchema = z.object({
   // Conta de acesso ao portal do atleta
@@ -17,11 +23,9 @@ const camposGeraisSchema = z.object({
     .string()
     .transform((v) => v.replace(/\D/g, ""))
     .refine((v) => v.length === 11, "CPF deve ter 11 dígitos"),
-  rg: z.string().min(5, "RG inválido"),
-
-  modalidade: z.literal("bodyboard"),
-  nivel: z.enum(["iniciante", "intermediario", "avancado"], {
-    required_error: "Escolha o nível",
+  categoria: z.enum(CATEGORIAS_ATLETA, {
+    required_error: "Escolha a categoria",
+    invalid_type_error: "Escolha a categoria",
   }),
 
   cep: z
@@ -45,8 +49,8 @@ const camposResponsavelSchema = z.object({
   nomePai: z.string().optional(),
   telefoneMae: z.string().optional(),
   telefonePai: z.string().optional(),
-  rgMae: z.string().optional(),
-  rgPai: z.string().optional(),
+  cpfMae: cpfOpcional,
+  cpfPai: cpfOpcional,
 });
 
 export const atletaSchema = camposGeraisSchema
@@ -63,14 +67,12 @@ export const atletaSchema = camposGeraisSchema
     const idade = calcularIdade(data.dataNascimento);
     if (idade >= 18) return;
 
-    const obrigatoriosMenor: (keyof typeof camposResponsavelSchema.shape)[] = [
+    const obrigatoriosMenor = [
       "nomeMae",
       "nomePai",
       "telefoneMae",
       "telefonePai",
-      "rgMae",
-      "rgPai",
-    ];
+    ] as const;
 
     for (const campo of obrigatoriosMenor) {
       const valor = data[campo];
@@ -79,6 +81,19 @@ export const atletaSchema = camposGeraisSchema
           code: z.ZodIssueCode.custom,
           path: [campo],
           message: "Obrigatório para atletas menores de 18 anos",
+        });
+      }
+    }
+
+    for (const campo of ["cpfMae", "cpfPai"] as const) {
+      if (data[campo].length !== 11) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [campo],
+          message:
+            campo === "cpfMae"
+              ? "Informe o CPF da mãe com 11 dígitos"
+              : "Informe o CPF do pai com 11 dígitos",
         });
       }
     }

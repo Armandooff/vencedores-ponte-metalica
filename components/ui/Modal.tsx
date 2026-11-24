@@ -8,12 +8,14 @@ export default function Modal({
   open,
   onClose,
   title,
+  description,
   children,
   wide = false,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
+  description?: string;
   children: React.ReactNode;
   wide?: boolean;
 }) {
@@ -57,9 +59,14 @@ export default function Modal({
         }`}
       >
         <div className="mb-6 flex items-start justify-between gap-4">
-          <h2 className="font-display text-2xl uppercase leading-none text-ink sm:text-3xl">
-            {title}
-          </h2>
+          <div>
+            <h2 className="font-display text-2xl uppercase leading-none text-ink sm:text-3xl">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-2 text-sm text-ink/60">{description}</p>
+            )}
+          </div>
           <button
             type="button"
             onClick={onClose}

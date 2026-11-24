@@ -18,11 +18,17 @@ const categorias: CategoriaNoticia[] = [
 
 const imagens = [
   { src: "/img/hero.jpg", label: "Ponte dos Ingleses ao anoitecer" },
-  { src: "/img/treino.jpg", label: "Treino de bodyboard" },
-  { src: "/img/acao.jpg", label: "Bodyboard na onda" },
-  { src: "/img/comunidade.jpg", label: "Comunidade no pôr do sol" },
-  { src: "/img/ponte.jpg", label: "Ponte dos Ingleses" },
-  { src: "/img/iracema.jpg", label: "Ponte dos Ingleses ao pôr do sol" },
+  { src: "/img/ponte.jpg", label: "Ponte dos Ingleses de dia" },
+  { src: "/img/podio-treino.jpg", label: "Pódio do projeto" },
+  { src: "/img/podio-conquistas.jpg", label: "Pódio do circuito" },
+  { src: "/img/vencedores.jpg", label: "Atleta celebrando a vitória" },
+  { src: "/img/treino-onda.jpg", label: "Bodyboard na onda" },
+  { src: "/img/galeria-competicao.jpg", label: "Celebração da equipe" },
+  { src: "/img/noticia-podio.jpg", label: "Pódio feminino" },
+  { src: "/img/noticia-trofeu.jpg", label: "Troféu do circuito" },
+  { src: "/img/noticia-equipamentos.jpg", label: "Equipamento do projeto" },
+  { src: "/img/comunidade.jpg", label: "Comunidade do projeto" },
+  { src: "/img/iracema.jpg", label: "Projeto sob a Ponte dos Ingleses" },
 ];
 
 type FormNoticia = {

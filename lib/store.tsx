@@ -10,15 +10,17 @@ import {
 } from "react";
 import { bancoInicial } from "./seed";
 import { hojeISO } from "./format";
+import { CHAVE_ANTIGA, CHAVE_ATUAL, migrarBanco } from "./migracao";
 import type {
   Atleta,
   BancoDados,
   Evento,
   Noticia,
+  Presenca,
   StatusAtleta,
 } from "./types";
 
-const CHAVE = "vpm:db:v2";
+const CHAVE = CHAVE_ATUAL;
 
 function novoId(prefixo: string) {
   const aleatorio =
@@ -44,6 +46,7 @@ type ContextoDados = {
   criarEvento: (dados: Omit<Evento, "id">) => Evento;
   atualizarEvento: (id: string, dados: Partial<Evento>) => void;
   excluirEvento: (id: string) => void;
+  registrarChamada: (eventoId: string, presencas: Record<string, Presenca>) => void;
   restaurarDemo: () => void;
 };
 
@@ -57,14 +60,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const salvo = window.localStorage.getItem(CHAVE);
-      if (salvo) {
-        const dados = JSON.parse(salvo) as BancoDados;
+      const legado = window.localStorage.getItem(CHAVE_ANTIGA);
+      const bruto = salvo ?? legado;
+      if (bruto) {
+        const dados = JSON.parse(bruto) as BancoDados;
         if (
           Array.isArray(dados.atletas) &&
           Array.isArray(dados.noticias) &&
           Array.isArray(dados.eventos)
         ) {
-          setDb(dados);
+          const migrado = migrarBanco(dados);
+          setDb(migrado);
+          if (!salvo) {
+            window.localStorage.setItem(CHAVE, JSON.stringify(migrado));
+            window.localStorage.removeItem(CHAVE_ANTIGA);
+          }
         }
       }
     } catch {
@@ -161,6 +171,18 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const registrarChamada = useCallback<ContextoDados["registrarChamada"]>(
+    (eventoId, presencas) => {
+      setDb((atual) => ({
+        ...atual,
+        eventos: atual.eventos.map((evento) =>
+          evento.id === eventoId ? { ...evento, presencas } : evento
+        ),
+      }));
+    },
+    []
+  );
+
   const restaurarDemo = useCallback(() => {
     setDb(bancoInicial);
   }, []);
@@ -178,6 +200,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       criarEvento,
       atualizarEvento,
       excluirEvento,
+      registrarChamada,
       restaurarDemo,
     }),
     [
@@ -192,6 +215,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       criarEvento,
       atualizarEvento,
       excluirEvento,
+      registrarChamada,
       restaurarDemo,
     ]
   );

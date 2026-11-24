@@ -1,6 +1,9 @@
+import type { CategoriaAtleta } from "./categorias";
+
+export type { CategoriaAtleta } from "./categorias";
+
 export type StatusAtleta = "pendente" | "aprovado" | "reprovado";
-export type Modalidade = "bodyboard";
-export type Nivel = "iniciante" | "intermediario" | "avancado";
+export type Presenca = "presente" | "ausente";
 
 export type CategoriaNoticia =
   | "Notícia"
@@ -17,7 +20,6 @@ export type Atleta = {
   dataNascimento: string;
   telefone: string;
   cpf: string;
-  rg: string;
   cep: string;
   bairro: string;
   endereco: string;
@@ -28,13 +30,13 @@ export type Atleta = {
   nomePai?: string;
   telefoneMae?: string;
   telefonePai?: string;
-  rgMae?: string;
-  rgPai?: string;
-  modalidade: Modalidade;
-  nivel: Nivel;
+  cpfMae?: string;
+  cpfPai?: string;
+  categoria?: CategoriaAtleta;
   status: StatusAtleta;
   criadoEm: string;
   foto?: string;
+  historia?: string;
 };
 
 export type Noticia = {
@@ -57,8 +59,8 @@ export type Evento = {
   data: string;
   hora: string;
   local: string;
-  turma: string;
   ativo: boolean;
+  presencas?: Record<string, Presenca>;
 };
 
 export type BancoDados = {
