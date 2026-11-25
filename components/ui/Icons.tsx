@@ -126,6 +126,36 @@ export const Heart = (p: IconProps) => (
   </Svg>
 );
 
+export const Package = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v8l9 5 9-5V8M12 13v8" />
+    <path d="m7.5 5.5 9 5" />
+  </Svg>
+);
+
+export const Copy = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="9" y="9" width="12" height="12" rx="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </Svg>
+);
+
+export const QrCode = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <path d="M14 14h3v3h-3zM19 19h2v2h-2zM14 20h2M20 14h1" />
+  </Svg>
+);
+
+export const Whatsapp = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M20.5 11.6a8.5 8.5 0 0 1-12.6 7.5L3 21l1.9-4.8a8.5 8.5 0 1 1 15.6-4.6Z" />
+    <path d="M8.5 8.8c.2-.4.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.5c.1.2 0 .4-.1.6l-.4.5c-.1.1-.1.3 0 .5.4.7 1 1.3 1.7 1.7.2.1.4.1.5 0l.5-.5c.2-.1.4-.2.6-.1l1.5.7c.3.1.4.3.4.5 0 .3-.1.9-.6 1.2-.4.3-1 .4-1.6.3-1.2-.2-2.4-.8-3.4-1.8-.9-1-1.5-2.1-1.6-3.2 0-.6.1-1.2.4-1.6Z" />
+  </Svg>
+);
+
 export const Sparkles = (p: IconProps) => (
   <Svg {...p}>
     <path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3ZM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" />

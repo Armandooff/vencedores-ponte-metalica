@@ -14,6 +14,7 @@ const projeto = [
   { href: "/noticias", label: "Notícias" },
   { href: "/cadastro", label: "Inscrever atleta" },
   { href: "/atletas", label: "Área do atleta" },
+  { href: "/doacoes", label: "Doações" },
   { href: "/creditos", label: "Créditos das imagens" },
 ];
 

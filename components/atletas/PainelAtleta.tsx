@@ -21,7 +21,7 @@ import {
   rotuloCategoria,
   rotuloStatus,
 } from "@/lib/format";
-import type { CategoriaNoticia, Noticia } from "@/lib/types";
+import type { CategoriaAtleta, CategoriaNoticia, Evento, Noticia } from "@/lib/types";
 import {
   ArrowRight,
   Bell,
@@ -44,6 +44,14 @@ const categorias: ("Todas" | CategoriaNoticia)[] = [
   "Notícia",
 ];
 
+function eventoVisivelParaCategoria(
+  evento: Evento,
+  categoria: CategoriaAtleta | undefined
+) {
+  if (!evento.categorias?.length) return true;
+  return Boolean(categoria && evento.categorias.includes(categoria));
+}
+
 const mensagensStatus = {
   aprovado:
     "Sua inscrição foi aprovada. Bem-vindo(a) à equipe — nos vemos na areia!",
@@ -61,6 +69,7 @@ export default function PainelAtleta() {
   const [noticiaAberta, setNoticiaAberta] = useState<Noticia | null>(null);
   const [perfilAberto, setPerfilAberto] = useState(false);
   const hoje = hojeISO();
+  const categoriaAtleta = atletaAtual?.categoria;
 
   useEffect(() => {
     if (!pronto) return;
@@ -92,20 +101,27 @@ export default function PainelAtleta() {
 
   const proximoEvento = useMemo(() => {
     return [...db.eventos]
-      .filter((e) => e.ativo && e.data >= hoje)
+      .filter(
+        (e) =>
+          e.ativo &&
+          e.data >= hoje &&
+          eventoVisivelParaCategoria(e, categoriaAtleta)
+      )
       .sort((a, b) => `${a.data}${a.hora}`.localeCompare(`${b.data}${b.hora}`))[0];
-  }, [db.eventos, hoje]);
+  }, [db.eventos, hoje, categoriaAtleta]);
 
   const eventosAtivos = useMemo(() => {
     return [...db.eventos]
-      .filter((e) => e.ativo)
+      .filter(
+        (e) => e.ativo && eventoVisivelParaCategoria(e, categoriaAtleta)
+      )
       .sort((a, b) => {
         const passadoA = a.data < hoje;
         const passadoB = b.data < hoje;
         if (passadoA !== passadoB) return passadoA ? 1 : -1;
         return `${a.data}${a.hora}`.localeCompare(`${b.data}${b.hora}`);
       });
-  }, [db.eventos, hoje]);
+  }, [db.eventos, hoje, categoriaAtleta]);
 
   if (!pronto || !atletaAtual) {
     return (

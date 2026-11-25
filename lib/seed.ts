@@ -355,6 +355,16 @@ const eventos: Evento[] = [
     hora: "08:00",
     local: "Praia de Iracema — em frente à Ponte dos Ingleses",
     ativo: true,
+    categorias: [
+      "sub12-feminino",
+      "sub12-masculino",
+      "sub14-feminino",
+      "sub14-masculino",
+      "sub16-feminino",
+      "sub16-masculino",
+      "sub18-feminino",
+      "sub18-masculino",
+    ],
   },
   {
     id: "evt-004",

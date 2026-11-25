@@ -17,20 +17,36 @@ export default function ChamadaEvento({
   onClose: () => void;
 }) {
   const { db, registrarChamada } = useDados();
+  const categoriasEvento = useMemo(
+    () => evento.categorias ?? [],
+    [evento.categorias]
+  );
   const aprovados = useMemo(
     () =>
       db.atletas
-        .filter((atleta) => atleta.status === "aprovado")
+        .filter(
+          (atleta) =>
+            atleta.status === "aprovado" &&
+            (!categoriasEvento.length ||
+              (atleta.categoria &&
+                categoriasEvento.includes(atleta.categoria)))
+        )
         .sort((a, b) => a.nomeCompleto.localeCompare(b.nomeCompleto, "pt-BR")),
-    [db.atletas]
+    [db.atletas, categoriasEvento]
+  );
+  const idsElegiveis = useMemo(
+    () => new Set(aprovados.map((atleta) => atleta.id)),
+    [aprovados]
   );
   const [busca, setBusca] = useState("");
-  const [presencas, setPresencas] = useState<Record<string, Presenca>>(() => {
-    if (evento.presencas) return { ...evento.presencas };
-    return Object.fromEntries(
-      aprovados.map((atleta) => [atleta.id, "presente" as Presenca])
-    );
-  });
+  const [presencas, setPresencas] = useState<Record<string, Presenca>>(() =>
+    Object.fromEntries(
+      aprovados.map((atleta) => [
+        atleta.id,
+        evento.presencas?.[atleta.id] ?? ("presente" as Presenca),
+      ])
+    )
+  );
 
   const lista = useMemo(() => {
     const termo = busca.trim().toLowerCase();
@@ -45,8 +61,8 @@ export default function ChamadaEvento({
     );
   }, [aprovados, busca]);
 
-  const presentes = Object.values(presencas).filter(
-    (presenca) => presenca === "presente"
+  const presentes = Object.entries(presencas).filter(
+    ([id, presenca]) => presenca === "presente" && idsElegiveis.has(id)
   ).length;
   const ausentes = aprovados.length - presentes;
 
@@ -127,7 +143,7 @@ export default function ChamadaEvento({
                       <p className="truncate text-sm font-semibold text-ink">
                         {atleta.nomeCompleto}
                       </p>
-                      <p className="truncate text-xs text-ink/55">
+                      <p className="truncate text-xs text-ink/65">
                         {rotuloCategoriaOuPendente(atleta.categoria)}
                       </p>
                     </div>
@@ -149,8 +165,10 @@ export default function ChamadaEvento({
               })}
             </ul>
           ) : (
-            <p className="bg-white px-4 py-8 text-center text-sm text-ink/55">
-              Nenhum atleta aprovado encontrado.
+            <p className="bg-white px-4 py-8 text-center text-sm text-ink/65">
+              {categoriasEvento.length
+                ? "Nenhum atleta aprovado nesta categoria."
+                : "Nenhum atleta aprovado encontrado."}
             </p>
           )}
         </div>

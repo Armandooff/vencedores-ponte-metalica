@@ -7,11 +7,12 @@ import Logo from "@/components/ui/Logo";
 import { ArrowUpRight, Instagram, Menu, X } from "@/components/ui/Icons";
 
 const links = [
-  { href: "/#projeto", label: "O projeto" },
+  { href: "/#projeto", label: "Projeto" },
   { href: "/#pilares", label: "Pilares" },
   { href: "/#treinos", label: "Treinos" },
   { href: "/#galeria", label: "Galeria" },
   { href: "/noticias", label: "Notícias" },
+  { href: "/doacoes", label: "Doações" },
 ];
 
 export default function Header() {
@@ -53,12 +54,12 @@ export default function Header() {
             <Logo priority />
           </Link>
 
-          <nav className="hidden items-center gap-7 lg:flex">
+          <nav className="hidden items-center gap-5 lg:flex xl:gap-7">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[13px] font-medium text-white/70 transition hover:text-sun"
+                className="whitespace-nowrap text-[13px] font-medium text-white/70 transition hover:text-sun"
               >
                 {link.label}
               </Link>
@@ -68,13 +69,13 @@ export default function Header() {
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/atletas"
-              className="rounded-full border border-white/25 px-4 py-2.5 text-[12px] font-bold uppercase tracking-wide text-white transition hover:border-white/60 hover:bg-white/10"
+              className="whitespace-nowrap rounded-full border border-white/25 px-3.5 py-2.5 text-[12px] font-bold uppercase tracking-wide text-white transition hover:border-white/60 hover:bg-white/10 xl:px-4"
             >
               Área do atleta
             </Link>
             <Link
               href="/cadastro"
-              className="rounded-full bg-sun px-4 py-2.5 text-[12px] font-bold uppercase tracking-wide text-ink transition hover:bg-sun-400"
+              className="whitespace-nowrap rounded-full bg-sun px-3.5 py-2.5 text-[12px] font-bold uppercase tracking-wide text-ink transition hover:bg-sun-400 xl:px-4"
             >
               Inscrever atleta
             </Link>

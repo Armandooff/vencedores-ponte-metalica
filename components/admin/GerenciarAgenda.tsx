@@ -6,6 +6,7 @@ import ChamadaEvento from "./ChamadaEvento";
 import ModalEvento from "./ModalEvento";
 import { useDados } from "@/lib/store";
 import { formatarData, hojeISO, proximoSabadoISO } from "@/lib/format";
+import { rotuloCategoriaAtleta } from "@/lib/categorias";
 import type { Evento } from "@/lib/types";
 import {
   Calendar,
@@ -118,6 +119,17 @@ export default function GerenciarAgenda() {
             (presenca) => presenca === "presente"
           ).length;
           const chamadaFeita = Boolean(evento.presencas);
+          const categorias = evento.categorias ?? [];
+          const labelsCategorias = categorias.map(
+            (categoria) => rotuloCategoriaAtleta[categoria]
+          );
+          const resumoCategorias = categorias.length
+            ? categorias.length <= 3
+              ? labelsCategorias.join(" · ")
+              : `${labelsCategorias.slice(0, 2).join(" · ")} +${
+                  categorias.length - 2
+                }`
+            : "Todas as categorias";
 
           return (
             <div
@@ -169,6 +181,15 @@ export default function GerenciarAgenda() {
                     <Users size={12} /> {formatarData(evento.data)}
                   </span>
                 </div>
+                <p
+                  className="mt-1 text-[10px] text-ink/65"
+                  title={labelsCategorias.join(", ")}
+                >
+                  <span className="font-bold uppercase tracking-wider text-ink/70">
+                    Categorias:
+                  </span>{" "}
+                  {resumoCategorias}
+                </p>
               </div>
 
               <div className="flex shrink-0 flex-wrap items-center gap-2">

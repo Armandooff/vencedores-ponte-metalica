@@ -69,12 +69,20 @@ function migrarEvento(valor: unknown): Evento | null {
   const {
     turma: _turma,
     presencas: _presencas,
+    categorias: _categorias,
     ...restante
   } = registro;
+
+  const categorias = Array.isArray(registro.categorias)
+    ? Array.from(
+        new Set(registro.categorias.filter((valor) => categoriaValida(valor)))
+      )
+    : [];
 
   return {
     ...(restante as unknown as Evento),
     ativo: registro.ativo !== false,
+    ...(categorias.length ? { categorias } : {}),
     presencas: migrarPresencas(registro.presencas),
   };
 }

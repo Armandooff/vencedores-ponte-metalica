@@ -31,6 +31,14 @@ import {
 
 const POR_PAGINA = 8;
 
+function normalizarBusca(valor: string) {
+  return valor
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 type ModalEstado =
   | { modo: "criar" }
   | { modo: "editar"; atleta: Atleta }
@@ -61,7 +69,8 @@ export default function GerenciarAtletas() {
   }, []);
 
   const filtrados = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+    const termo = normalizarBusca(busca);
+    const digitos = busca.replace(/\D/g, "");
     return [...db.atletas]
       .filter((a) => status === "todos" || a.status === status)
       .filter((a) => {
@@ -72,9 +81,9 @@ export default function GerenciarAtletas() {
       .filter(
         (a) =>
           !termo ||
-          a.nomeCompleto.toLowerCase().includes(termo) ||
+          normalizarBusca(a.nomeCompleto).includes(termo) ||
           a.email.toLowerCase().includes(termo) ||
-          a.cpf.includes(termo.replace(/\D/g, ""))
+          (digitos.length > 0 && a.cpf.replace(/\D/g, "").includes(digitos))
       )
       .sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
   }, [db.atletas, busca, status, categoria]);

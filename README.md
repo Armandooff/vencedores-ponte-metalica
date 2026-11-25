@@ -30,6 +30,7 @@ documental.
 | `/admin/atletas` | CRUD de atletas, aprovação rápida, busca, filtro por categoria e exportação CSV |
 | `/admin/noticias` | CRUD de notícias, rascunhos, destaque e publicação |
 | `/admin/agenda` | CRUD da agenda, chamada de presença e atalho de treino de sábado |
+| `/doacoes` | Doação de materiais via WhatsApp e doação em dinheiro via Pix de exemplo |
 | `/creditos` | Créditos e licenças das imagens |
 
 ## Acessos de demonstração
@@ -66,6 +67,7 @@ components/
   cadastro/             formulário completo de inscrição
   atletas/              login e painel do atleta
   admin/                shell, CRUDs e modais do dashboard
+  doacoes/              copiar chave Pix
   noticias/             mural público
   ui/                   ícones, logo, modal e animação de entrada
 lib/
@@ -100,6 +102,20 @@ O cadastro usa 14 categorias: Profissional, Sub12, Sub14, Sub16, Sub18, Open e
 categoria e registrar a chamada de cada evento; o atalho **Treino de sábado**
 cria o próximo encontro já com a data preenchida. A chamada fica salva no
 evento e é reaberta com as presenças anteriores.
+
+Ao criar ou editar um evento, a coordenação escolhe **todas as categorias** ou
+uma combinação delas. O evento só aparece na agenda dos atletas daquelas
+categorias, e a chamada também lista apenas os atletas elegíveis. Eventos antigos
+sem categorias continuam visíveis para todos.
+
+## Doações
+
+A página `/doacoes` tem dois caminhos: doação de materiais com link para
+WhatsApp e doação em dinheiro com chave Pix e QR Code. Os dados atuais são
+fictícios (`(85) 99999-0000` e `doacoes@exemplo.com`) e estão sinalizados na
+própria página. Antes de publicar, substitua o número, a mensagem do WhatsApp e
+a chave Pix pelos dados oficiais em `app/doacoes/page.tsx` e gere um novo QR em
+`public/img/pix-qr.png`.
 
 ## Segurança e LGPD
 

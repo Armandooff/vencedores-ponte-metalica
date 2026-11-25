@@ -60,6 +60,7 @@ export type Evento = {
   hora: string;
   local: string;
   ativo: boolean;
+  categorias?: CategoriaAtleta[];
   presencas?: Record<string, Presenca>;
 };
 
