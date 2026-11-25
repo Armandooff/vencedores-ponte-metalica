@@ -1,188 +1,234 @@
 # Vencedores da Ponte Metálica — Plataforma Web
 
-Site e painel do projeto social de bodyboard da **Praia de Iracema,
-Fortaleza (CE)**. Identidade visual inspirada no perfil
-[@vencedorespontemetalica](https://www.instagram.com/vencedorespontemetalica/)
-e no selo oficial do projeto: preto profundo, laranja pôr do sol e fotografia
-documental.
+Site e sistema de gestão do **Vencedores da Ponte Metálica**, projeto social de bodyboard na Praia de Iracema, Fortaleza/CE.
+
+- Site público: https://vencedores-ponte-metalica.vercel.app
+- Instagram: [@vencedorespontemetalica](https://www.instagram.com/vencedorespontemetalica/)
 
 ## Stack
 
-- **Next.js 14** (App Router) + **TypeScript**
-- **Tailwind CSS** com design system próprio (`ink`, `sun`, `cream`)
-- **React Hook Form + Zod** na inscrição
-- **React IMask** para CPF, CEP e telefone
-- **ViaCEP** para autopreenchimento de endereço
-- **TanStack Table** (disponível para evoluções do painel)
-- Tipografia: **Anton** (display) + **Inter** (texto)
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS
+- Supabase: Postgres, Auth e Storage
+- React Hook Form + Zod
+- IMask, ViaCEP
+- TanStack Table
+- Fontes Anton + Inter
+- Vercel para os dois deployments
 
-## Rotas
+## Dois sistemas, um banco
 
-| Rota | Descrição |
-| --- | --- |
-| `/` | Landing page: hero, quem somos, pilares, treinos, conquistas, galeria, notícias, idealizador e CTA |
-| `/noticias` | Mural público de notícias com busca, filtros por categoria e leitura em modal |
-| `/cadastro` | Inscrição completa do atleta, com responsáveis para menores de 18 e consentimento LGPD |
-| `/atletas` | Login do portal do atleta |
-| `/atletas/painel` | Painel do atleta: status, agenda completa, notícias e perfil editável com foto e história |
-| `/admin/login` | Login da coordenação |
-| `/admin` | Visão geral: KPIs, inscrições por mês, distribuição por categoria e últimos cadastros |
-| `/admin/atletas` | CRUD de atletas, aprovação rápida, busca, filtro por categoria e exportação CSV |
-| `/admin/noticias` | CRUD de notícias, rascunhos, destaque e publicação |
-| `/admin/agenda` | CRUD da agenda, chamada de presença e atalho de treino de sábado |
-| `/doacoes` | Doação de materiais via WhatsApp e doação em dinheiro via Pix de exemplo |
-| `/creditos` | Créditos e licenças das imagens |
+O projeto usa dois deployments do mesmo repositório, separados por `NEXT_PUBLIC_APP_MODE`:
+
+| Sistema | Modo | Escopo |
+|---|---|---|
+| Site + portal do atleta | `site` | Landing, notícias, cadastro, login e painel do atleta, doações |
+| Painel administrativo | `admin` | Login da coordenação, atletas, notícias, agenda e chamada |
+
+Os dois compartilham o mesmo projeto Supabase. O `middleware.ts` impede que o admin seja acessado pelo domínio público e impede que o site seja acessado pelo domínio administrativo.
+
+### Rotas do site
+
+- `/` — landing page
+- `/noticias` — mural público de notícias
+- `/cadastro` — inscrição de atleta
+- `/atletas` — login do atleta
+- `/atletas/painel` — painel do atleta
+- `/doacoes` — doações de materiais e Pix
+- `/creditos` — créditos das imagens
+
+### Rotas do admin
+
+- `/admin/login` — login da coordenação
+- `/admin` — visão geral
+- `/admin/atletas` — gestão de atletas
+- `/admin/noticias` — gestão de notícias
+- `/admin/agenda` — eventos, chamada e presenças
 
 ## Acessos de demonstração
 
-- **Atleta:** `atleta@demo.com` / `123456`
-- **Administrador:** `admin@vencedorespontemetalica.com` / `admin123`
+Os logins são reais no Supabase Auth:
 
-As credenciais de admin estão fixas em `lib/auth.tsx` apenas para demonstração.
-Não use esse modelo em produção.
+- **Coordenação:** `admin@vencedorespontemetalica.com` / `admin123`
+- **Atleta:** `atleta@demo.com` / `123456`
+- **Atleta Sub16 (Sofia):** `sofia.almeida@exemplo.com` / `123456`
+
+No domínio público, `/admin` redireciona para o deployment administrativo. No domínio do admin, as rotas públicas redirecionam para `/admin`.
+
+> Troque as senhas de demonstração antes de usar o sistema com dados reais.
 
 ## Como rodar
 
 ```bash
 npm install
+cp .env.example .env.local
+# preencha as credenciais do Supabase em .env.local
 npm run dev
 ```
 
-Acesse `http://localhost:3000`.
-
-Build de produção:
+O site fica em `http://localhost:3000`. Se a porta estiver ocupada:
 
 ```bash
-npm run build
-npm start
+npm run dev -- -p 3100
+```
+
+Para simular o admin localmente:
+
+```bash
+NEXT_PUBLIC_APP_MODE=admin NEXT_PUBLIC_SITE_URL=http://localhost:3100 NEXT_PUBLIC_ADMIN_URL=http://localhost:3200 npm run dev -- -p 3200
 ```
 
 ## Arquitetura
 
 ```
-app/                    rotas (App Router)
+app/
+  (site público, portal do atleta, doações e admin)
+  api/
+    cadastro/route.ts
+    admin/atletas/route.ts
+    admin/restaurar-demo/route.ts
 components/
-  site/                 header e footer institucionais
-  landing/              seções da landing page
-  cadastro/             formulário completo de inscrição
-  atletas/              login e painel do atleta
-  admin/                shell, CRUDs e modais do dashboard
-  doacoes/              copiar chave Pix
-  noticias/             mural público
-  ui/                   ícones, logo, modal e animação de entrada
+  site/           Header, Footer
+  landing/        Seções da landing
+  atletas/        Login, painel e perfil
+  admin/          Painel administrativo
+  noticias/       Listagem pública
+  doacoes/        Cópia da chave Pix
+  ui/             Componentes compartilhados
 lib/
-  types.ts              modelos de Atleta, Notícia e Evento
-  seed.ts               dados iniciais de demonstração
-  store.tsx             "banco" local com Context API + localStorage
-  auth.tsx              sessão de atleta/admin
-  schemas/atleta.ts     validação Zod (condicional para menores)
-  categorias.ts         14 categorias de atleta, rótulos e agrupamentos
-  migracao.ts           migração do banco local v2 para v3
-  format.ts             datas, status, categorias e iniciais
+  supabase/       Clients browser/server, mappers
+  auth.tsx        Supabase Auth + perfil
+  store.tsx       Fachada de dados para os componentes
+  categorias.ts   14 categorias de atleta
+  app-urls.ts     Modos e URLs dos dois deployments
+  types.ts        Tipos do domínio
+supabase/
+  schema.sql      Tabelas, RLS, funções, triggers e bucket
+scripts/
+  migrate.mjs     Aplica o schema no Postgres
+  seed.ts         Cria usuários e dados de demonstração
+middleware.ts     Separação site/admin por host
 ```
 
-### Persistência atual
+## Banco e autenticação
 
-Os dados são persistidos em **localStorage** (`vpm:db:v3`), com migração
-automática do banco anterior (`vpm:db:v2`). Isso permite demonstrar o fluxo
-completo — o admin publica uma notícia ou registra uma chamada e o atleta vê a
-atualização — sem backend. Para produção, basta substituir as funções de
-`lib/store.tsx` por chamadas a uma API.
+### Supabase
 
-Sugestões de backend, em ordem de esforço:
+O banco é Postgres gerenciado no Supabase, com:
 
-1. **Supabase/Firebase** — Auth + banco + storage de fotos com pouco código.
-2. **API Routes + Prisma/Postgres** — mantém tudo no ecossistema Next.js.
-3. **Backend Laravel existente** — expor endpoints REST e trocar o store.
+- `profiles` — papel (`admin` ou `atleta`) vinculado a `auth.users`
+- `atletas` — ficha do atleta e vínculo com o usuário Auth
+- `noticias` — notícias publicadas e rascunhos
+- `eventos` — agenda e categorias elegíveis
+- `presencas` — chamada por evento
+- bucket `atletas` — fotos de perfil
 
-## Categorias e chamada
+O schema aplica RLS: o atleta vê apenas o próprio cadastro/presenças; o admin gerencia tudo; notícias publicadas são públicas; eventos ativos são filtrados pela categoria do atleta.
 
-O cadastro usa 14 categorias: Profissional, Sub12, Sub14, Sub16, Sub18, Open e
-40+, nas versões masculino e feminino. O admin pode filtrar atletas por
-categoria e registrar a chamada de cada evento; o atalho **Treino de sábado**
-cria o próximo encontro já com a data preenchida. A chamada fica salva no
-evento e é reaberta com as presenças anteriores.
+### Migração e seed
 
-Ao criar ou editar um evento, a coordenação escolhe **todas as categorias** ou
-uma combinação delas. O evento só aparece na agenda dos atletas daquelas
-categorias, e a chamada também lista apenas os atletas elegíveis. Eventos antigos
-sem categorias continuam visíveis para todos.
+```bash
+node scripts/migrate.mjs
+npx tsx scripts/seed.ts
+```
+
+O `migrate.mjs` aplica `supabase/schema.sql` usando `SUPABASE_DB_URL` via pooler. O `seed.ts` cria os usuários Auth, perfis, atletas, notícias e eventos de demonstração via service role.
+
+O seed atual contém 12 atletas, 6 notícias e 4 eventos. O banco não é mais localStorage: os dados são compartilhados entre navegadores e entre os dois sistemas.
+
+### Variáveis de ambiente
+
+Copie `.env.example` para `.env.local` e preencha:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` — somente server-side, nunca no cliente
+- `SUPABASE_DB_URL` — usada apenas pelos scripts de migração
+- `NEXT_PUBLIC_APP_MODE` — `site` ou `admin`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_ADMIN_URL`
+
+O `.env.local` está no `.gitignore` e nunca deve ser commitado.
+
+## Categorias e eventos
+
+São 14 categorias: Profissional, Sub14, Sub16, Sub18, Open, 40+ e Sub12, cada uma nas versões masculino e feminino.
+
+Ao criar um evento, o admin pode marcar **Todas as categorias** ou escolher categorias específicas. O evento só aparece no painel do atleta se a categoria dele estiver incluída. A chamada também lista apenas atletas elegíveis para aquele evento.
 
 ## Doações
 
-A página `/doacoes` tem dois caminhos: doação de materiais com link para
-WhatsApp e doação em dinheiro com chave Pix e QR Code. Os dados atuais são
-fictícios (`(85) 99999-0000` e `doacoes@exemplo.com`) e estão sinalizados na
-própria página. Antes de publicar, substitua o número, a mensagem do WhatsApp e
-a chave Pix pelos dados oficiais em `app/doacoes/page.tsx` e gere um novo QR em
-`public/img/pix-qr.png`.
+A página `/doacoes` aceita:
+
+- **Materiais:** pranchas, coletes, lycras e equipamentos, com contato por WhatsApp.
+- **Dinheiro:** chave Pix e QR Code.
+
+Os dados atuais são **fictícios de demonstração**:
+
+- WhatsApp: `(85) 99999-0000`
+- Pix: `doacoes@exemplo.com`
+
+Substitua número, mensagem, chave e QR pelos dados oficiais antes de divulgar. O QR fica em `public/img/pix-qr.png` e pode ser gerado com:
+
+```bash
+npx --yes qrcode "SUA_CHAVE_PIX" -o public/img/pix-qr.png -w 512
+```
 
 ## Segurança e LGPD
 
-O cadastro coleta CPF, CadÚnico, telefone e, para menores, nome/telefone/CPF
-dos responsáveis. O perfil do atleta também pode guardar foto e história. Antes
-de ir para produção é obrigatório:
-
-- autenticação real com hash de senha (bcrypt/Argon2), nunca senha em texto puro;
-- proteção das rotas `/admin` no servidor (middleware), não só no cliente;
-- política de retenção, consentimento do responsável e trilha de auditoria;
-- criptografia em repouso e restrição de acesso aos documentos.
-
-Os dados atuais são fictícios e servem apenas para demonstração. Para voltar ao
-conteúdo original, use o botão **Restaurar dados de exemplo** no rodapé da
-Visão geral do admin.
+- Senhas ficam no Supabase Auth, não no banco público.
+- `service_role` só é usada em route handlers/server, nunca no bundle do cliente.
+- RLS ativa em todas as tabelas; o atleta só lê/escreve o que é seu.
+- Papéis de admin ficam em `profiles.role`.
+- O middleware separa fisicamente os dois domínios.
+- Fotos de perfil são comprimidas no cliente e armazenadas em `foto_url`.
+- Menores exigem dados e CPF dos responsáveis no cadastro.
+- Recuperação de senha, verificação de e-mail e política de privacidade definitiva ainda devem ser configuradas para produção.
 
 ## Qualidade
 
-- Build de produção (`npm run build`) sem erros de TypeScript.
-- ESLint (`next/core-web-vitals`) sem avisos.
-- Lighthouse: **100** em acessibilidade, boas práticas e SEO nas páginas
-  públicas auditadas.
-- `axe-core` (WCAG A/AA): **0 violações** na landing, portal do atleta e admin.
-- Fluxos validados: login de atleta e admin, cadastro completo com ViaCEP e
-  máscaras, aprovação de atleta, publicação de notícia e leitura pelo atleta.
-- Layout responsivo, menu mobile, galeria com lightbox e modais acessíveis.
+- `npx tsc --noEmit`
+- `npm run lint`
+- `npm run build`
+- Lighthouse/axe nas telas públicas e administrativas
+- Testes manuais de login, cadastro, CRUD, chamada, eventos por categoria, doações e responsividade mobile
+
+A última verificação local passou com 19 páginas estáticas, API routes dinâmicas, modos `site` e `admin` validados e login real do admin no Supabase.
 
 ## Imagens
 
-As fotos da Ponte dos Ingleses vêm do Wikimedia Commons. As imagens de pódios,
-treinos, celebrações e comunidade fazem parte do acervo do projeto e de
-publicações de atletas e parceiros no Instagram (@vencedorespontemetalica).
-Todos os créditos estão em `/creditos`.
+As fotos de pódios, treinos, celebrações e comunidade vêm do acervo do projeto e de publicações de atletas/parceiros no Instagram. A foto de bodyboard na onda tem crédito de **Thelipe Lima / Paulo Sucesso**. As fotos da Ponte dos Ingleses usam Wikimedia Commons (Claudney Neves e Governo Federal Brasileiro).
 
-Para trocar as fotos, substitua os arquivos de `public/img/` mantendo os mesmos
-nomes — ou ajuste os caminhos nos componentes.
+Os arquivos ficam em `public/img/`. Para trocar por fotos oficiais em alta resolução, mantenha os mesmos nomes ou atualize os caminhos nos componentes.
 
-- Logotipo: `public/img/logo.png`
-- Hero / Ponte dos Ingleses ao anoitecer: `public/img/hero.jpg` — Claudney Neves, CC BY-SA 4.0
-- Ponte dos Ingleses de dia: `public/img/ponte.jpg` — Governo Federal Brasileiro, CC BY-SA 3.0
-- Pódio do projeto: `public/img/podio-treino.jpg` — acervo do projeto no Instagram
-- Pódio do circuito: `public/img/podio-conquistas.jpg` — acervo do projeto no Instagram
-- Atleta celebrando: `public/img/vencedores.jpg` — acervo do projeto no Instagram
-- Bodyboard na onda: `public/img/treino-onda.jpg` — Thelipe Lima / Paulo Sucesso
-- Celebração da equipe: `public/img/galeria-competicao.jpg` — acervo do projeto no Instagram
-- Atleta ao pôr do sol: `public/img/galeria-atleta.jpg` — acervo do projeto no Instagram
-- Comunidade do projeto: `public/img/comunidade.jpg` — acervo do projeto no Instagram
-- Iracema / atleta sob a Ponte: `public/img/iracema.jpg` — acervo do projeto no Instagram
-- Treino na areia: `public/img/treino.jpg` — acervo do projeto no Instagram
-- A caminho do mar: `public/img/acao.jpg` — acervo do projeto no Instagram
+## Deploy na Vercel
 
-## Deploy
+### Projeto do site
 
-Antes de publicar:
+- Root directory: raiz do repositório
+- Variáveis: Supabase + `NEXT_PUBLIC_APP_MODE=site`
+- `NEXT_PUBLIC_SITE_URL=https://vencedores-ponte-metalica.vercel.app`
+- `NEXT_PUBLIC_ADMIN_URL=https://vencedores-ponte-metalica-admin.vercel.app`
 
-1. ajuste `metadataBase` em `app/layout.tsx` e a constante `BASE` em
-   `app/sitemap.ts` / `app/robots.ts` para o domínio real;
-2. troque o armazenamento local por banco/API (ver acima);
-3. remova as credenciais de demonstração da interface e do código;
-4. cadastre as variáveis de ambiente do backend escolhido.
+### Projeto do admin
 
-## Próximos passos sugeridos
+- Criar um segundo projeto Vercel a partir do mesmo repositório
+- Variáveis: Supabase + `NEXT_PUBLIC_APP_MODE=admin`
+- `NEXT_PUBLIC_SITE_URL` e `NEXT_PUBLIC_ADMIN_URL` iguais aos do site
 
-1. Backend real + upload de foto do atleta (S3/Supabase Storage).
-2. Middleware de autenticação e papéis (admin, coordenação, atleta).
-3. Recuperação de senha e verificação de e-mail.
-4. Notificações por WhatsApp/e-mail para novos treinos e aprovações.
-5. Página individual de notícia com Open Graph dinâmico.
-6. Painel de frequência nos treinos e evolução do atleta.
-7. Edição dos textos da landing e da galeria pelo próprio dashboard.
+Depois do deploy, valide:
+
+1. `/admin` no domínio público redireciona para o admin.
+2. `/` no domínio do admin redireciona para `/admin`.
+3. Login de coordenação e atleta funcionam.
+4. Atletas veem apenas eventos da própria categoria.
+5. Doações e QR Code carregam no celular.
+
+## Próximos passos
+
+- Configurar domínio próprio (por exemplo, `www` e `admin`).
+- Ativar recuperação de senha e verificação de e-mail no Supabase Auth.
+- Mover o upload de fotos para o bucket `atletas` do Storage.
+- Criar página individual de notícia por slug.
+- Adicionar notificações de novos treinos e notícias.
+- Substituir os dados fictícios de doação pelos oficiais.

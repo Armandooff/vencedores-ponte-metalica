@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Logo from "@/components/ui/Logo";
 import { useAuth } from "@/lib/auth";
 import { useDados } from "@/lib/store";
+import { SITE_URL } from "@/lib/app-urls";
 import {
   Calendar,
   ExternalLink,
@@ -108,7 +109,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
       <div className="space-y-1 border-t border-white/10 px-3 py-4">
         <Link
-          href="/"
+          href={SITE_URL}
           target="_blank"
           className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white"
         >

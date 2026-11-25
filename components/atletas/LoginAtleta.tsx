@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/ui/Logo";
 import { ADMIN_EMAIL, useAuth } from "@/lib/auth";
+import { ADMIN_LOGIN_URL } from "@/lib/app-urls";
 import {
   ArrowRight,
   ArrowLeft,
@@ -33,7 +34,7 @@ export default function LoginAtleta() {
     }
   }, [pronto, sessao, router]);
 
-  const aoEnviar = (e: React.FormEvent) => {
+  const aoEnviar = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro(null);
     setErroAdmin(false);
@@ -48,13 +49,16 @@ export default function LoginAtleta() {
       return;
     }
 
-    const resultado = entrarAtleta(email, senha);
-    if (!resultado.ok) {
-      setErro(resultado.erro ?? "Não foi possível entrar.");
+    try {
+      const resultado = await entrarAtleta(email, senha);
+      if (!resultado.ok) {
+        setErro(resultado.erro ?? "Não foi possível entrar.");
+        return;
+      }
+      router.push("/atletas/painel");
+    } finally {
       setEnviando(false);
-      return;
     }
-    router.push("/atletas/painel");
   };
 
   return (
@@ -179,7 +183,7 @@ export default function LoginAtleta() {
                 <p>{erro}</p>
                 {erroAdmin && (
                   <Link
-                    href="/admin/login"
+                    href={ADMIN_LOGIN_URL}
                     className="mt-2 inline-flex items-center gap-1.5 font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:decoration-white"
                   >
                     Ir para o painel administrativo <ArrowRight size={14} />
@@ -212,7 +216,7 @@ export default function LoginAtleta() {
           <p className="mt-4 text-center text-xs text-white/50">
             É da coordenação?{" "}
             <Link
-              href="/admin/login"
+              href={ADMIN_LOGIN_URL}
               className="font-semibold text-sun transition hover:text-sun-400"
             >
               Acessar o painel administrativo

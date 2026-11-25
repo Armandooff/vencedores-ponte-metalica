@@ -24,6 +24,7 @@ export default function AdminLogin() {
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
     if (pronto && sessao?.tipo === "admin") {
@@ -31,15 +32,21 @@ export default function AdminLogin() {
     }
   }, [pronto, sessao, router]);
 
-  const aoEnviar = (e: React.FormEvent) => {
+  const aoEnviar = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro(null);
-    const resultado = entrarAdmin(email, senha);
-    if (!resultado.ok) {
-      setErro(resultado.erro ?? "Não foi possível entrar.");
-      return;
+    setEnviando(true);
+
+    try {
+      const resultado = await entrarAdmin(email, senha);
+      if (!resultado.ok) {
+        setErro(resultado.erro ?? "Não foi possível entrar.");
+        return;
+      }
+      router.push("/admin");
+    } finally {
+      setEnviando(false);
     }
-    router.push("/admin");
   };
 
   return (
@@ -164,8 +171,13 @@ export default function AdminLogin() {
               </div>
             )}
 
-            <button type="submit" className="btn-sun w-full">
-              Entrar no painel <ArrowRight size={16} />
+            <button
+              type="submit"
+              disabled={enviando}
+              className="btn-sun w-full disabled:opacity-60"
+            >
+              {enviando ? "Entrando..." : "Entrar no painel"}
+              {!enviando && <ArrowRight size={16} />}
             </button>
           </form>
 

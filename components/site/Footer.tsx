@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
+import { ADMIN_LOGIN_URL } from "@/lib/app-urls";
 import { ArrowUpRight, Instagram, MapPin } from "@/components/ui/Icons";
 
 const navegacao = [
@@ -112,7 +113,7 @@ export default function Footer() {
             <Link href="/creditos" className="transition hover:text-white/70">
               Créditos
             </Link>
-            <Link href="/admin" className="transition hover:text-white/70">
+            <Link href={ADMIN_LOGIN_URL} className="transition hover:text-white/70">
               Painel administrativo
             </Link>
           </div>

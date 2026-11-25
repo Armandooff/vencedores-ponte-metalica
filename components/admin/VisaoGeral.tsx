@@ -29,6 +29,8 @@ import {
 export default function VisaoGeral() {
   const { db, restaurarDemo } = useDados();
   const [resetAberto, setResetAberto] = useState(false);
+  const [restaurando, setRestaurando] = useState(false);
+  const [erroReset, setErroReset] = useState<string | null>(null);
 
   const hoje = new Date();
   const mesAtual = hojeISO().slice(0, 7);
@@ -432,12 +434,14 @@ export default function VisaoGeral() {
 
       <div className="flex flex-col items-start justify-between gap-3 border-t border-ink/10 pt-5 sm:flex-row sm:items-center">
         <p className="text-[11px] leading-relaxed text-ink/60">
-          Ambiente de demonstração: os dados ficam salvos apenas neste
-          navegador (localStorage).
+          Os dados são salvos no Supabase e compartilhados entre os acessos.
         </p>
         <button
           type="button"
-          onClick={() => setResetAberto(true)}
+          onClick={() => {
+            setErroReset(null);
+            setResetAberto(true);
+          }}
           className="text-[10px] font-bold uppercase tracking-wider text-ink/60 underline-offset-4 transition hover:text-red-600 hover:underline"
         >
           Restaurar dados de exemplo
@@ -450,26 +454,48 @@ export default function VisaoGeral() {
         title="Restaurar demonstração"
       >
         <p className="text-sm leading-relaxed text-ink/65">
-          Isso apaga os atletas, notícias e eventos criados neste navegador e
-          devolve os dados de exemplo do projeto. A sessão atual continua ativa.
+          Isso apaga os atletas, notícias e eventos atuais do banco e devolve os
+          dados de exemplo do projeto. As contas de acesso existentes são
+          mantidas. A sessão atual continua ativa.
         </p>
+
+        {erroReset && (
+          <div
+            role="alert"
+            className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
+            {erroReset}
+          </div>
+        )}
+
         <div className="mt-6 flex flex-wrap justify-end gap-3">
           <button
             type="button"
             onClick={() => setResetAberto(false)}
-            className="btn-ghost-dark !px-5 !py-2.5 !text-[11px]"
+            disabled={restaurando}
+            className="btn-ghost-dark !px-5 !py-2.5 !text-[11px] disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="button"
-            onClick={() => {
-              restaurarDemo();
+            disabled={restaurando}
+            onClick={async () => {
+              setRestaurando(true);
+              setErroReset(null);
+              const resultado = await restaurarDemo();
+              setRestaurando(false);
+              if (!resultado.ok) {
+                setErroReset(
+                  resultado.erro ?? "Não foi possível restaurar os dados."
+                );
+                return;
+              }
               setResetAberto(false);
             }}
-            className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-red-700"
+            className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-red-700 disabled:opacity-50"
           >
-            Restaurar dados
+            {restaurando ? "Restaurando..." : "Restaurar dados"}
           </button>
         </div>
       </Modal>

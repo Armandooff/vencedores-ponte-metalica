@@ -86,9 +86,10 @@ export default function ModalAtleta({
   onEditar?: (atleta: Atleta) => void;
   onExcluir?: (atleta: Atleta) => void;
 }) {
-  const { db, criarAtleta, atualizarAtleta } = useDados();
+  const { db, criarAtletaComAcesso, atualizarAtleta } = useDados();
   const [form, setForm] = useState<FormAtleta>(() => paraForm(atleta));
   const [erro, setErro] = useState<string | null>(null);
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
     setForm(paraForm(atleta));
@@ -108,7 +109,7 @@ export default function ModalAtleta({
       ? "Editar atleta"
       : "Ficha do atleta";
 
-  const salvar = () => {
+  const salvar = async () => {
     setErro(null);
     if (form.nomeCompleto.trim().length < 3) {
       setErro("Informe o nome completo do atleta.");
@@ -144,18 +145,57 @@ export default function ModalAtleta({
       nomeCompleto: form.nomeCompleto.trim(),
     };
 
-    if (modo === "criar") {
-      criarAtleta({
-        ...dados,
-        senha: form.senha || "123456",
-        status: form.status,
-        foto: undefined,
-      });
-    } else if (atleta) {
+    setSalvando(true);
+    try {
       const { senha, ...semSenha } = dados;
-      atualizarAtleta(atleta.id, senha ? dados : semSenha);
+
+      if (modo === "criar") {
+        const resultado = await criarAtletaComAcesso({
+          ...semSenha,
+          foto: undefined,
+          senha: senha.trim() || undefined,
+        });
+        if (!resultado.ok) {
+          setErro(resultado.erro ?? "Não foi possível cadastrar o atleta.");
+          return;
+        }
+      } else if (atleta) {
+        const emailMudou =
+          dados.email.trim().toLowerCase() !== atleta.email.trim().toLowerCase();
+        const senhaNova = senha.trim();
+
+        // E-mail e senha vivem em auth.users, não na tabela de atletas.
+        // Atualizamos pela rota protegida para manter o login sincronizado.
+        if (emailMudou || senhaNova) {
+          const resposta = await fetch("/api/admin/atletas", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              atletaId: atleta.id,
+              ...(emailMudou ? { email: dados.email.trim().toLowerCase() } : {}),
+              ...(senhaNova ? { senha: senhaNova } : {}),
+            }),
+          });
+          if (!resposta.ok) {
+            const corpo = (await resposta.json().catch(() => ({}))) as {
+              erro?: string;
+            };
+            setErro(
+              corpo.erro ?? "Não foi possível atualizar os dados de acesso."
+            );
+            return;
+          }
+        }
+
+        atualizarAtleta(atleta.id, semSenha);
+      }
+
+      onClose();
+    } catch {
+      setErro("Não foi possível conectar. Tente novamente.");
+    } finally {
+      setSalvando(false);
     }
-    onClose();
   };
 
   if (modo === "ver" && atleta) {
@@ -480,16 +520,22 @@ export default function ModalAtleta({
           <button
             type="button"
             onClick={onClose}
-            className="btn-ghost-dark !px-5 !py-2.5 !text-[11px]"
+            disabled={salvando}
+            className="btn-ghost-dark !px-5 !py-2.5 !text-[11px] disabled:opacity-50"
           >
             <X size={14} /> Cancelar
           </button>
           <button
             type="button"
             onClick={salvar}
-            className="btn-sun !px-5 !py-2.5 !text-[11px]"
+            disabled={salvando}
+            className="btn-sun !px-5 !py-2.5 !text-[11px] disabled:opacity-50"
           >
-            {modo === "criar" ? "Cadastrar atleta" : "Salvar alterações"}
+            {salvando
+              ? "Salvando..."
+              : modo === "criar"
+              ? "Cadastrar atleta"
+              : "Salvar alterações"}
           </button>
         </div>
       </div>

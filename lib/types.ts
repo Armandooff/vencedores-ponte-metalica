@@ -14,9 +14,10 @@ export type CategoriaNoticia =
 
 export type Atleta = {
   id: string;
+  /** Vínculo com auth.users. Opcional em cadastros antigos/sem conta. */
+  userId?: string | null;
   nomeCompleto: string;
   email: string;
-  senha: string;
   dataNascimento: string;
   telefone: string;
   cpf: string;

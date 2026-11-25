@@ -8,7 +8,6 @@ import { IMaskInput } from "react-imask";
 import { atletaSchema, AtletaFormData } from "@/lib/schemas/atleta";
 import { opcoesCategoriaAtleta } from "@/lib/categorias";
 import { calcularIdade, ehMenorDeIdade } from "@/lib/idade";
-import { useDados } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { ArrowRight, Check, MapPin, Shield, User, Users } from "@/components/ui/Icons";
 
@@ -48,8 +47,7 @@ function Secao({
 
 export default function FormularioAtleta() {
   const router = useRouter();
-  const { db, criarAtleta, pronto } = useDados();
-  const { iniciarSessaoAtleta } = useAuth();
+  const { entrarAtleta } = useAuth();
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [buscandoCep, setBuscandoCep] = useState(false);
   const [cepNaoEncontrado, setCepNaoEncontrado] = useState(false);
@@ -108,34 +106,39 @@ export default function FormularioAtleta() {
 
   const onSubmit = async (dados: AtletaFormData) => {
     setErroGeral(null);
-    if (!pronto) {
-      setErroGeral("Aguarde um instante e tente novamente.");
-      return;
+
+    try {
+      const resposta = await fetch("/api/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      });
+      const corpo = (await resposta.json().catch(() => ({}))) as {
+        erro?: string;
+      };
+
+      if (!resposta.ok) {
+        setErroGeral(
+          corpo.erro ?? "Não foi possível concluir a inscrição. Tente novamente."
+        );
+        return;
+      }
+
+      // A API cria o usuário já confirmado; agora abrimos a sessão no cliente
+      // para manter o mesmo comportamento de entrar direto no painel.
+      const login = await entrarAtleta(dados.email, dados.senha);
+      if (!login.ok) {
+        setErroGeral(
+          login.erro ??
+            "Inscrição enviada, mas não foi possível entrar automaticamente. Use seu e-mail e senha no portal."
+        );
+        return;
+      }
+
+      router.push("/atletas/painel");
+    } catch {
+      setErroGeral("Não foi possível conectar. Verifique sua internet.");
     }
-
-    const emailNormalizado = dados.email.trim().toLowerCase();
-    const jaExiste = db.atletas.some(
-      (a) => a.email.toLowerCase() === emailNormalizado
-    );
-    if (jaExiste) {
-      setErroGeral(
-        "Já existe uma conta com este e-mail. Tente entrar na área do atleta."
-      );
-      return;
-    }
-
-    const { confirmarSenha, consentimento, ...resto } = dados;
-    void confirmarSenha;
-    void consentimento;
-
-    const atleta = criarAtleta({
-      ...resto,
-      email: emailNormalizado,
-      status: "pendente",
-    });
-
-    iniciarSessaoAtleta(atleta.id);
-    router.push("/atletas/painel");
   };
 
   return (
