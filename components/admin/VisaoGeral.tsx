@@ -241,7 +241,7 @@ export default function VisaoGeral() {
               <div key={id}>
                 <div className="flex items-center justify-between gap-2 text-xs">
                   <span className="font-semibold text-ink/70">{rotulo}</span>
-                  <span className="text-[10px] text-ink/50">
+                  <span className="text-[10px] text-ink/70">
                     M {masculino} · F {feminino}
                   </span>
                   <span className="w-4 text-right font-bold text-ink">
