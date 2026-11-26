@@ -5,8 +5,6 @@ import { ArrowRight, Waves } from "@/components/ui/Icons";
 const numeros = [
   { valor: "3.020", rotulo: "seguidores no Instagram" },
   { valor: "100%", rotulo: "gratuito para as famílias" },
-  { valor: "1", rotulo: "modalidade: bodyboard" },
-  { valor: "1", rotulo: "comunidade que se fortalece no mar" },
 ];
 
 export default function Hero() {
@@ -74,7 +72,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-6 border-t border-white/15 pt-7 sm:mt-14 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-6 border-t border-white/15 pt-7 sm:mt-14">
           {numeros.map((item) => (
             <div key={item.rotulo}>
               <p className="font-display text-3xl leading-none text-white sm:text-4xl">

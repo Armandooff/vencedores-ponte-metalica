@@ -1,51 +1,120 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
-import { ArrowRight, Instagram } from "@/components/ui/Icons";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Instagram,
+  MapPin,
+  Whatsapp,
+} from "@/components/ui/Icons";
+
+const WHATSAPP_URL =
+  "https://wa.me/5585999990000?text=Ol%C3%A1!%20Quero%20falar%20com%20o%20Vencedores%20da%20Ponte%20Met%C3%A1lica.";
+const INSTAGRAM_URL = "https://www.instagram.com/vencedorespontemetalica/";
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=Praia+de+Iracema+Fortaleza";
+
+const canais = [
+  {
+    label: "WhatsApp",
+    valor: "Fale com a gente",
+    href: WHATSAPP_URL,
+    icone: Whatsapp,
+    externo: true,
+  },
+  {
+    label: "Instagram",
+    valor: "@vencedorespontemetalica",
+    href: INSTAGRAM_URL,
+    icone: Instagram,
+    externo: true,
+  },
+  {
+    label: "Onde treinamos",
+    valor: "Praia de Iracema",
+    href: MAPS_URL,
+    icone: MapPin,
+    externo: true,
+  },
+];
 
 export default function CtaFinal() {
   return (
-    <section className="noise relative overflow-hidden bg-sun py-24 text-ink md:py-32">
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-[26rem] w-[26rem] rotate-12 opacity-10">
+    <section
+      id="contato"
+      className="noise relative overflow-hidden bg-sun py-20 text-ink md:py-28"
+    >
+      <div className="pointer-events-none absolute -right-16 top-1/2 hidden -translate-y-1/2 opacity-10 md:block">
         <Image
           src="/img/logo.png"
           alt=""
-          width={400}
-          height={400}
-          className="h-full w-full object-contain"
+          width={520}
+          height={520}
+          className="h-auto w-[28rem]"
         />
       </div>
 
-      <div className="container-x relative">
-        <Reveal className="max-w-3xl">
-          <span className="kicker text-ink/75">
+      <div className="container-x relative grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+        <Reveal>
+          <span className="kicker text-ink/70">
             <span className="h-px w-8 bg-ink/40" />
-            Faça parte
+            Contato
           </span>
-          <h2 className="mt-5 font-display text-[clamp(2.8rem,7vw,6.5rem)] uppercase leading-[0.88]">
-            A próxima geração
-            <br />
-            já está na água.
+          <h2 className="mt-5 max-w-xl font-display text-[clamp(2.8rem,6vw,5.5rem)] uppercase leading-[0.9]">
+            Vamos conversar?
           </h2>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink">
-            Se você tem um filho, sobrinho ou vizinho que sonha em praticar
-            bodyboard, essa é a porta de entrada. As vagas são gratuitas e
-            menores de 18 anos precisam da autorização de um responsável.
+          <p className="mt-6 max-w-md text-base leading-relaxed text-ink/80">
+            Tire dúvidas, inscreva um atleta ou apoie o projeto. A coordenação
+            está por aqui.
           </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/cadastro" className="btn-ink">
               Inscrever atleta <ArrowRight size={16} />
             </Link>
-            <a
-              href="https://www.instagram.com/vencedorespontemetalica/"
-              target="_blank"
-              rel="noreferrer"
-              className="btn border border-ink/30 text-ink hover:bg-ink hover:text-white"
+            <Link
+              href="/doacoes"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/25 px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-ink transition hover:bg-ink hover:text-sun"
             >
-              <Instagram size={16} /> Falar com o projeto
-            </a>
+              Apoiar o projeto
+            </Link>
           </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <nav
+            aria-label="Contato e redes sociais"
+            className="border-t border-ink/20"
+          >
+            {canais.map((canal) => {
+              const Icone = canal.icone;
+              return (
+                <a
+                  key={canal.label}
+                  href={canal.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between gap-4 border-b border-ink/20 py-5"
+                >
+                  <span className="flex items-center gap-3">
+                    <Icone size={18} className="shrink-0 text-ink/70" />
+                    <span>
+                      <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-ink/70">
+                        {canal.label}
+                      </span>
+                      <span className="mt-1 block font-display text-2xl uppercase leading-none">
+                        {canal.valor}
+                      </span>
+                    </span>
+                  </span>
+                  <ArrowUpRight
+                    size={18}
+                    className="shrink-0 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
+                </a>
+              );
+            })}
+          </nav>
         </Reveal>
       </div>
     </section>
