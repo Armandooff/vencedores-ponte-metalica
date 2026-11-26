@@ -17,7 +17,7 @@ export default function Idealizador() {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/20" />
 
-      <div className="container-x relative py-20 md:py-24">
+      <div className="container-x relative py-16 md:py-20">
         <Reveal className="max-w-2xl">
           <span className="kicker text-sun">
             <span className="h-px w-8 bg-sun" />

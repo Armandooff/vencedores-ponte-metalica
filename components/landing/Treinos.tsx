@@ -30,9 +30,9 @@ const etapas = [
 
 export default function Treinos() {
   return (
-    <section id="treinos" className="bg-[#EFE6D8] py-24 md:py-32">
+    <section id="treinos" className="bg-[#EFE6D8] py-16 md:py-24">
       <div className="container-x">
-        <div className="grid gap-16 lg:grid-cols-2">
+        <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <Reveal>
               <span className="kicker text-sun-700">

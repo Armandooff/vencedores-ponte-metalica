@@ -3,10 +3,10 @@ import Reveal from "@/components/ui/Reveal";
 
 export default function QuemSomos() {
   return (
-    <section id="projeto" className="relative overflow-hidden bg-cream py-24 md:py-32">
+    <section id="projeto" className="relative overflow-hidden bg-cream py-16 md:py-24">
       <div className="container-x">
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-          <Reveal className="relative pb-14 pr-8 sm:pr-14">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <Reveal className="relative pb-10 pr-8 sm:pr-14">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]">
               <Image
                 src="/img/ponte.jpg"

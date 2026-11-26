@@ -22,8 +22,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink text-white">
-      <div className="container-x py-14 md:py-16">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
+      <div className="container-x py-10 md:py-12">
+        <div className="grid gap-8 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
@@ -69,7 +69,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-5 text-[10px] font-bold uppercase tracking-wider text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-9 flex flex-col gap-3 border-t border-white/10 pt-5 text-[10px] font-bold uppercase tracking-wider text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© {ano} Vencedores da Ponte Metálica</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/creditos" className="transition hover:text-white">

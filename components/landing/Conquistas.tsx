@@ -29,7 +29,7 @@ export default function Conquistas() {
   return (
     <section
       id="conquistas"
-      className="relative overflow-hidden bg-ink py-24 text-white md:py-32"
+      className="relative overflow-hidden bg-ink py-16 text-white md:py-24"
     >
       <div className="container-x">
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
@@ -53,7 +53,7 @@ export default function Conquistas() {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
           {destaques.map((item, i) => (
             <Reveal key={item.titulo} delay={i * 100}>
               <article className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10">
@@ -79,7 +79,7 @@ export default function Conquistas() {
         </div>
 
         <Reveal delay={120}>
-          <div className="mt-14 border-t border-white/10 pt-8">
+          <div className="mt-10 border-t border-white/10 pt-7">
             <p className="max-w-2xl font-display text-2xl uppercase leading-tight text-white/85 sm:text-3xl">
               “A gente não forma só atletas.
               <span className="text-sun"> Forma gente que sabe levantar.”</span>

@@ -80,7 +80,7 @@ export default function Galeria() {
   const foto = aberta !== null ? fotos[aberta] : null;
 
   return (
-    <section id="galeria" className="bg-cream py-24 md:py-32">
+    <section id="galeria" className="bg-cream py-16 md:py-24">
       <div className="container-x">
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
           <Reveal>

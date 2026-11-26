@@ -43,7 +43,7 @@ export default function CtaFinal() {
   return (
     <section
       id="contato"
-      className="noise relative overflow-hidden bg-sun py-20 text-ink md:py-28"
+      className="noise relative overflow-hidden bg-sun py-16 text-ink md:py-20"
     >
       <div className="pointer-events-none absolute -right-16 top-1/2 hidden -translate-y-1/2 opacity-10 md:block">
         <Image
