@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useDados } from "@/lib/store";
 import { classesCategoria, formatarData } from "@/lib/format";
 import Reveal from "@/components/ui/Reveal";
-import { ArrowRight, ArrowUpRight } from "@/components/ui/Icons";
+import { ArrowRight } from "@/components/ui/Icons";
 
 export default function NoticiasPreview() {
   const { db } = useDados();
@@ -82,10 +82,6 @@ export default function NoticiasPreview() {
                   <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-ink/60">
                     {noticia.resumo}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-sun-700">
-                    Ler notícia
-                    <ArrowUpRight size={13} />
-                  </span>
                 </div>
               </Link>
             </Reveal>

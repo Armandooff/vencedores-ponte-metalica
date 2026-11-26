@@ -66,10 +66,7 @@ export default function Conquistas() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-6">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-sun">
-                    Destaque do projeto
-                  </span>
-                  <h3 className="mt-2 font-display text-3xl uppercase leading-none">
+                  <h3 className="font-display text-3xl uppercase leading-none">
                     {item.titulo}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-white/65">
@@ -82,14 +79,11 @@ export default function Conquistas() {
         </div>
 
         <Reveal delay={120}>
-          <div className="mt-14 flex flex-col items-start gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-14 border-t border-white/10 pt-8">
             <p className="max-w-2xl font-display text-2xl uppercase leading-tight text-white/85 sm:text-3xl">
               “A gente não forma só atletas.
               <span className="text-sun"> Forma gente que sabe levantar.”</span>
             </p>
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-              Filosofia do projeto
-            </span>
           </div>
         </Reveal>
       </div>

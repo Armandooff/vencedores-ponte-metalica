@@ -18,7 +18,7 @@ export default function CtaFinal() {
 
       <div className="container-x relative">
         <Reveal className="max-w-3xl">
-          <span className="kicker text-ink/60">
+          <span className="kicker text-ink/75">
             <span className="h-px w-8 bg-ink/40" />
             Faça parte
           </span>
@@ -27,7 +27,7 @@ export default function CtaFinal() {
             <br />
             já está na água.
           </h2>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink/75">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink">
             Se você tem um filho, sobrinho ou vizinho que sonha em praticar
             bodyboard, essa é a porta de entrada. As vagas são gratuitas e
             menores de 18 anos precisam da autorização de um responsável.

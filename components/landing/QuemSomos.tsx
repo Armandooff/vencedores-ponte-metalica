@@ -1,20 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
-import { ArrowUpRight, Check } from "@/components/ui/Icons";
-
-const numeros = [
-  { valor: "3.020", rotulo: "seguidores acompanhando o projeto" },
-  { valor: "100%", rotulo: "gratuito para as famílias" },
-  { valor: "1", rotulo: "modalidade: bodyboard" },
-  { valor: "1", rotulo: "comunidade que se fortalece no mar" },
-];
-
-const destaques = [
-  "Treinos gratuitos com pranchas e coletes disponíveis",
-  "Acompanhamento técnico e social de perto",
-  "Protagonismo para crianças e jovens da comunidade",
-];
 
 export default function QuemSomos() {
   return (
@@ -31,8 +16,8 @@ export default function QuemSomos() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-              <span className="absolute bottom-6 left-6 text-[10px] font-bold uppercase tracking-[0.25em] text-white/80">
-                Ponte dos Ingleses · Iracema
+              <span className="absolute bottom-6 left-6 max-w-[calc(100%-11rem)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/80 sm:max-w-none">
+                Ponte dos Ingleses
               </span>
             </div>
 
@@ -82,43 +67,7 @@ export default function QuemSomos() {
               pertencimento para crianças, jovens e suas famílias.
             </p>
 
-            <ul className="mt-8 space-y-3">
-              {destaques.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-ink/75">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sun text-ink">
-                    <Check size={12} />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="https://www.instagram.com/vencedorespontemetalica/"
-              target="_blank"
-              rel="noreferrer"
-              className="group mt-8 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-ink"
-            >
-              Acompanhe o dia a dia
-              <ArrowUpRight
-                size={16}
-                className="text-sun-600 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </Link>
           </Reveal>
-        </div>
-
-        <div className="mt-20 grid grid-cols-2 gap-8 border-t border-ink/10 pt-10 lg:grid-cols-4">
-          {numeros.map((item, i) => (
-            <Reveal key={item.rotulo} delay={i * 70}>
-              <p className="font-display text-4xl leading-none text-ink sm:text-5xl">
-                {item.valor}
-              </p>
-              <p className="mt-3 text-[11px] uppercase leading-relaxed tracking-wider text-ink/60">
-                {item.rotulo}
-              </p>
-            </Reveal>
-          ))}
         </div>
       </div>
     </section>

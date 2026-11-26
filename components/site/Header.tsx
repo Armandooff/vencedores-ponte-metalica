@@ -8,7 +8,6 @@ import { ArrowUpRight, Instagram, Menu, X } from "@/components/ui/Icons";
 
 const links = [
   { href: "/#projeto", label: "Projeto" },
-  { href: "/#pilares", label: "Pilares" },
   { href: "/#treinos", label: "Treinos" },
   { href: "/#galeria", label: "Galeria" },
   { href: "/noticias", label: "Notícias" },

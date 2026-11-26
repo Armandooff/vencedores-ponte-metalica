@@ -47,7 +47,7 @@ export default function PaginaCadastro() {
           </div>
         </section>
 
-        <section className="container-x -mt-10 pb-24">
+        <section className="container-x relative z-10 -mt-10 pb-24">
           <div className="mx-auto max-w-3xl rounded-3xl border border-ink/10 bg-white p-6 shadow-card sm:p-10">
             <FormularioAtleta />
           </div>

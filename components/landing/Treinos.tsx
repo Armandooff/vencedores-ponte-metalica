@@ -1,7 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
 import Reveal from "@/components/ui/Reveal";
-import { ArrowRight, Calendar, Shield, Waves } from "@/components/ui/Icons";
 
 const etapas = [
   {
@@ -65,14 +63,6 @@ export default function Treinos() {
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-                <div className="absolute bottom-5 left-5 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-sun px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-ink">
-                    <Calendar size={13} /> Treinos gratuitos
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur">
-                    <Shield size={13} /> Equipamentos inclusos
-                  </span>
-                </div>
               </div>
             </Reveal>
           </div>
@@ -98,21 +88,6 @@ export default function Treinos() {
                 </Reveal>
               ))}
             </ol>
-
-            <Reveal delay={200}>
-              <div className="mt-2 flex flex-col gap-4 rounded-2xl border border-ink/10 bg-cream p-6">
-                <div className="flex items-start gap-3">
-                  <Waves size={20} className="mt-0.5 shrink-0 text-sun-600" />
-                  <p className="text-sm leading-relaxed text-ink/70">
-                    As vagas são gratuitas e têm prioridade para crianças e
-                    jovens da comunidade da Praia de Iracema.
-                  </p>
-                </div>
-                <Link href="/cadastro" className="btn-sun w-full sm:w-auto">
-                  Inscrever atleta <ArrowRight size={16} />
-                </Link>
-              </div>
-            </Reveal>
           </div>
         </div>
       </div>

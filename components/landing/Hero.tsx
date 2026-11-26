@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Instagram, MapPin, Waves } from "@/components/ui/Icons";
+import { ArrowRight, Waves } from "@/components/ui/Icons";
 
 const numeros = [
   { valor: "3.020", rotulo: "seguidores no Instagram" },
@@ -40,7 +40,7 @@ export default function Hero() {
               <span className="text-sun">areia.</span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/75 sm:mt-7 sm:text-lg">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white sm:mt-7 sm:text-lg">
               Bodyboard e comunidade para crianças e jovens da Praia de
               Iracema. Aqui, cada onda ensina — e cada atleta descobre que pode
               ir mais longe.
@@ -67,7 +67,7 @@ export default function Hero() {
                 className="h-48 w-48 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.55)] xl:h-56 xl:w-56"
               />
             </div>
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/45">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/60">
               <Waves size={14} className="text-sun" />
               Bodyboard · Mar · Cidadania
             </div>
@@ -85,22 +85,6 @@ export default function Hero() {
               </p>
             </div>
           ))}
-        </div>
-
-        <div className="mt-8 hidden flex-wrap items-center justify-between gap-4 text-[11px] uppercase tracking-[0.22em] text-white/60 sm:flex">
-          <span className="inline-flex items-center gap-2">
-            <MapPin size={14} className="text-sun" />
-            Iracema · Fortaleza · CE
-          </span>
-          <a
-            href="https://www.instagram.com/vencedorespontemetalica/"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 transition hover:text-white"
-          >
-            <Instagram size={14} className="text-sun" />
-            @vencedorespontemetalica
-          </a>
         </div>
       </div>
     </section>

@@ -66,10 +66,6 @@ export default function Idealizador() {
             </div>
           </Reveal>
         </div>
-
-        <p className="mt-16 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/60">
-          Praia de Iracema · Fortaleza · Ceará
-        </p>
       </div>
     </section>
   );

@@ -1,11 +1,10 @@
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
 import { ADMIN_LOGIN_URL } from "@/lib/app-urls";
-import { ArrowUpRight, Instagram, MapPin } from "@/components/ui/Icons";
+import { Instagram, MapPin } from "@/components/ui/Icons";
 
 const navegacao = [
   { href: "/#projeto", label: "O projeto" },
-  { href: "/#pilares", label: "Pilares" },
   { href: "/#treinos", label: "Treinos" },
   { href: "/#conquistas", label: "Conquistas" },
   { href: "/#galeria", label: "Galeria" },
@@ -16,7 +15,6 @@ const projeto = [
   { href: "/cadastro", label: "Inscrever atleta" },
   { href: "/atletas", label: "Área do atleta" },
   { href: "/doacoes", label: "Doações" },
-  { href: "/creditos", label: "Créditos das imagens" },
 ];
 
 export default function Footer() {
@@ -94,15 +92,6 @@ export default function Footer() {
               Fortaleza · Ceará
             </span>
           </div>
-
-          <a
-            href="https://www.instagram.com/vencedorespontemetalica/"
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-white transition hover:text-sun"
-          >
-            Falar com o projeto <ArrowUpRight size={15} />
-          </a>
         </div>
       </div>
 

@@ -3,7 +3,6 @@ import Footer from "@/components/site/Footer";
 import Hero from "@/components/landing/Hero";
 import Marquee from "@/components/landing/Marquee";
 import QuemSomos from "@/components/landing/QuemSomos";
-import Pilares from "@/components/landing/Pilares";
 import Treinos from "@/components/landing/Treinos";
 import Conquistas from "@/components/landing/Conquistas";
 import Galeria from "@/components/landing/Galeria";
@@ -19,7 +18,6 @@ export default function LandingPage() {
         <Hero />
         <Marquee />
         <QuemSomos />
-        <Pilares />
         <Treinos />
         <Conquistas />
         <Galeria />
