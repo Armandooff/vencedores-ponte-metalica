@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/ui/Logo";
-import { useAuth, ADMIN_EMAIL, ADMIN_SENHA } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,7 +14,6 @@ import {
   LayoutGrid,
   Lock,
   Mail,
-  Shield,
 } from "@/components/ui/Icons";
 
 export default function AdminLogin() {
@@ -181,16 +180,6 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-sun">
-              <Shield size={14} /> Acesso de demonstração
-            </p>
-            <p className="mt-2 break-all text-xs leading-relaxed text-white/50">
-              {ADMIN_EMAIL}
-              <br />
-              Senha: <span className="text-white/80">{ADMIN_SENHA}</span>
-            </p>
-          </div>
 
           <p className="mt-4 text-center text-xs text-white/50">
             É atleta?{" "}

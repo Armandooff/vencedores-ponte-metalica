@@ -15,7 +15,6 @@ import {
   Instagram,
   Lock,
   Mail,
-  Shield,
 } from "@/components/ui/Icons";
 
 export default function LoginAtleta() {
@@ -202,16 +201,6 @@ export default function LoginAtleta() {
             </button>
           </form>
 
-          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-sun">
-              <Shield size={14} /> Conta de demonstração
-            </p>
-            <p className="mt-2 text-xs leading-relaxed text-white/50">
-              E-mail: <span className="text-white/80">atleta@demo.com</span>
-              <br />
-              Senha: <span className="text-white/80">123456</span>
-            </p>
-          </div>
 
           <p className="mt-4 text-center text-xs text-white/50">
             É da coordenação?{" "}

@@ -69,7 +69,6 @@ type ContextoDados = {
   atualizarEvento: (id: string, dados: Partial<Evento>) => void;
   excluirEvento: (id: string) => void;
   registrarChamada: (eventoId: string, presencas: Record<string, Presenca>) => void;
-  restaurarDemo: () => Promise<ResultadoOperacao>;
 };
 
 const Contexto = createContext<ContextoDados | null>(null);
@@ -512,35 +511,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     [carregar]
   );
 
-  const restaurarDemo = useCallback<ContextoDados["restaurarDemo"]>(
-    async () => {
-      try {
-        const resposta = await fetch("/api/admin/restaurar-demo", {
-          method: "POST",
-        });
-        const corpo = await respostaJson(resposta);
-        if (!resposta.ok) {
-          return {
-            ok: false,
-            erro: corpo.erro ?? "Não foi possível restaurar a demonstração.",
-          };
-        }
-        await carregar();
-        return { ok: true };
-      } catch (erro) {
-        console.error(
-          "[Supabase] restaurar demo:",
-          erro instanceof Error ? erro.message : erro
-        );
-        return {
-          ok: false,
-          erro: "Não foi possível conectar. Tente novamente.",
-        };
-      }
-    },
-    [carregar]
-  );
-
   const valor = useMemo(
     () => ({
       db,
@@ -557,7 +527,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       atualizarEvento,
       excluirEvento,
       registrarChamada,
-      restaurarDemo,
     }),
     [
       db,
@@ -574,7 +543,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       atualizarEvento,
       excluirEvento,
       registrarChamada,
-      restaurarDemo,
     ]
   );
 

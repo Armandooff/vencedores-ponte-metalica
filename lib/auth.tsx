@@ -16,7 +16,6 @@ import { mapearAtleta } from "./supabase/mappers";
 import type { Atleta } from "./types";
 
 export const ADMIN_EMAIL = "admin@vencedorespontemetalica.com";
-export const ADMIN_SENHA = "admin123";
 
 export type Sessao =
   | { tipo: "admin"; nome: string }

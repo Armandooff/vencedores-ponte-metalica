@@ -3,7 +3,7 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { bancoInicial } from "../lib/seed";
 
-const { atletas, eventos, noticias } = bancoInicial;
+const { eventos, noticias } = bancoInicial;
 
 function carregarEnv(arquivo: string) {
   const env: Record<string, string> = {};
@@ -40,7 +40,6 @@ const supabase = createClient(url, serviceRole, {
 
 const ADMIN_EMAIL = "admin@vencedorespontemetalica.com";
 const ADMIN_SENHA = "admin123";
-const SENHA_ATLETA = "123456";
 
 async function listarUsuarios() {
   const { data, error } = await supabase.auth.admin.listUsers({
@@ -94,57 +93,7 @@ async function main() {
   );
   if (erroAdmin) throw erroAdmin;
 
-  for (const atleta of atletas) {
-    const usuario = await garantirUsuario(
-      atleta.email,
-      atleta.nomeCompleto,
-      SENHA_ATLETA,
-      usuarios
-    );
-
-    const { error: erroPerfil } = await supabase.from("profiles").upsert(
-      {
-        id: usuario.id,
-        role: "atleta",
-        nome: atleta.nomeCompleto,
-        email: atleta.email,
-      },
-      { onConflict: "id" }
-    );
-    if (erroPerfil) throw erroPerfil;
-
-    const { error: erroAtleta } = await supabase.from("atletas").upsert(
-      {
-        id: atleta.id,
-        user_id: usuario.id,
-        nome_completo: atleta.nomeCompleto,
-        email: atleta.email,
-        data_nascimento: atleta.dataNascimento,
-        telefone: atleta.telefone || null,
-        cpf: atleta.cpf,
-        cep: atleta.cep || null,
-        bairro: atleta.bairro || null,
-        endereco: atleta.endereco || null,
-        numero: atleta.numero || null,
-        cod_juv: atleta.codJuv || null,
-        cad_unico: atleta.cadUnico || null,
-        nome_mae: atleta.nomeMae || null,
-        nome_pai: atleta.nomePai || null,
-        telefone_mae: atleta.telefoneMae || null,
-        telefone_pai: atleta.telefonePai || null,
-        cpf_mae: atleta.cpfMae || null,
-        cpf_pai: atleta.cpfPai || null,
-        categoria: atleta.categoria || null,
-        status: atleta.status,
-        foto_url: atleta.foto || null,
-        historia: atleta.historia || null,
-        consentimento: true,
-        criado_em: atleta.criadoEm,
-      },
-      { onConflict: "id" }
-    );
-    if (erroAtleta) throw erroAtleta;
-  }
+  
 
   for (const noticia of noticias) {
     const { error } = await supabase.from("noticias").upsert(
@@ -197,11 +146,7 @@ async function main() {
     }
   }
 
-  console.log(
-    `Seed concluído: ${atletas.length} atletas, ${noticias.length} notícias e ${eventos.length} eventos.`
-  );
-  console.log(`Admin: ${ADMIN_EMAIL} / ${ADMIN_SENHA}`);
-  console.log(`Atleta demo: atleta@demo.com / ${SENHA_ATLETA}`);
+  console.log(`Seed concluído: ${noticias.length} notícias e ${eventos.length} eventos.`);
 }
 
 main().catch((erro) => {

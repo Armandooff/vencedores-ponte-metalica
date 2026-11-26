@@ -45,17 +45,9 @@ Os dois compartilham o mesmo projeto Supabase. O `middleware.ts` impede que o ad
 - `/admin/noticias` — gestão de notícias
 - `/admin/agenda` — eventos, chamada e presenças
 
-## Acessos de demonstração
+## Acesso administrativo
 
-Os logins são reais no Supabase Auth:
-
-- **Coordenação:** `admin@vencedorespontemetalica.com` / `admin123`
-- **Atleta:** `atleta@demo.com` / `123456`
-- **Atleta Sub16 (Sofia):** `sofia.almeida@exemplo.com` / `123456`
-
-No domínio público, `/admin` redireciona para o deployment administrativo. No domínio do admin, as rotas públicas redirecionam para `/admin`.
-
-> Troque as senhas de demonstração antes de usar o sistema com dados reais.
+O painel administrativo é restrito à coordenação do projeto. Atletas criam a própria conta pela página de cadastro. Nenhuma senha é divulgada na interface.
 
 ## Como rodar
 
@@ -86,7 +78,6 @@ app/
   api/
     cadastro/route.ts
     admin/atletas/route.ts
-    admin/restaurar-demo/route.ts
 components/
   site/           Header, Footer
   landing/        Seções da landing
@@ -106,7 +97,7 @@ supabase/
   schema.sql      Tabelas, RLS, funções, triggers e bucket
 scripts/
   migrate.mjs     Aplica o schema no Postgres
-  seed.ts         Cria usuários e dados de demonstração
+  seed.ts         Cria usuários e dados iniciais
 middleware.ts     Separação site/admin por host
 ```
 
