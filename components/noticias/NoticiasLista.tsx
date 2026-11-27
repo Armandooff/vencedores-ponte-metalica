@@ -11,6 +11,7 @@ import {
 } from "@/lib/format";
 import type { CategoriaNoticia, Noticia } from "@/lib/types";
 import Modal from "@/components/ui/Modal";
+import NewsletterSecao from "@/components/noticias/NewsletterSecao";
 import {
   ArrowRight,
   Bell,
@@ -222,6 +223,8 @@ export default function NoticiasLista() {
           </div>
         </div>
       </section>
+
+      <NewsletterSecao />
 
       <Modal
         open={Boolean(aberta)}

@@ -65,6 +65,14 @@ export type Evento = {
   presencas?: Record<string, Presenca>;
 };
 
+/** Campos de evento seguros para exibição pública (sem presenças/atletas). */
+export type EventoPublico = Pick<
+  Evento,
+  "id" | "titulo" | "descricao" | "data" | "hora" | "local"
+> & {
+  categorias: CategoriaAtleta[];
+};
+
 export type BancoDados = {
   atletas: Atleta[];
   noticias: Noticia[];

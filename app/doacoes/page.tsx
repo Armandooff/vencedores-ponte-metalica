@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import Reveal from "@/components/ui/Reveal";
 import CopiarPix from "@/components/doacoes/CopiarPix";
 import {
+  ArrowRight,
   ArrowUpRight,
   Check,
   Heart,
@@ -166,6 +168,81 @@ export default function PaginaDoacoes() {
             </Reveal>
           </div>
 
+          <Reveal delay={140}>
+            <section
+              aria-labelledby="doacao-recorrente"
+              className="mt-8 overflow-hidden rounded-[2rem] border border-sun/30 bg-white shadow-card"
+            >
+              <div className="grid gap-8 p-7 sm:p-9 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+                <div>
+                  <span className="kicker text-sun-700">
+                    <span className="h-px w-8 bg-sun-600" />
+                    Doação recorrente
+                  </span>
+                  <h2
+                    id="doacao-recorrente"
+                    className="mt-3 font-display text-3xl uppercase leading-none text-ink sm:text-4xl"
+                  >
+                    Quero doar todo mês.
+                  </h2>
+                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink/65">
+                    A recorrência ainda não tem cobrança automática nesta
+                    página. Se você quiser apoiar o projeto mensalmente,
+                    converse com a coordenação para combinar a forma de envio,
+                    a frequência e o acompanhamento. Nenhum valor é cobrado e
+                    nenhum cartão é solicitado aqui.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link href="/#contato" className="btn-ink">
+                      Conversar com a coordenação{" "}
+                      <ArrowRight size={16} />
+                    </Link>
+                    <a
+                      href="https://www.instagram.com/vencedorespontemetalica/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-ghost-dark"
+                    >
+                      <Instagram size={16} /> Falar no Instagram
+                      <ArrowUpRight size={14} />
+                    </a>
+                  </div>
+                  <p className="mt-4 text-xs leading-relaxed text-ink/60">
+                    O canal oficial de WhatsApp será confirmado pela
+                    coordenação.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-cream p-5 sm:p-6">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sun-700">
+                    Como funciona
+                  </p>
+                  <ol className="mt-4 space-y-4">
+                    {[
+                      "Você conversa com a coordenação e conta que quer apoiar mensalmente.",
+                      "A forma de envio, a frequência e o acompanhamento são combinados diretamente.",
+                      "O projeto confirma o recebimento pelos canais oficiais.",
+                    ].map((item, indice) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-3 text-sm leading-relaxed text-ink/70"
+                      >
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sun text-[10px] font-bold text-ink">
+                          {indice + 1}
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ol>
+                  <p className="mt-5 border-t border-ink/10 pt-4 text-xs leading-relaxed text-ink/60">
+                    Sem gateway, sem cadastro de cartão e sem promessa de
+                    cobrança automática nesta página.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </Reveal>
+
           <Reveal delay={160}>
             <div className="mt-8 flex flex-col items-start justify-between gap-4 rounded-[2rem] bg-ink p-7 text-white sm:flex-row sm:items-center sm:p-9">
               <div>
@@ -181,9 +258,13 @@ export default function PaginaDoacoes() {
                 href="https://www.instagram.com/vencedorespontemetalica/"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-ghost-light shrink-0"
+                className="btn-ghost-light w-full justify-center sm:w-auto sm:shrink-0"
               >
-                <Instagram size={16} /> @vencedorespontemetalica
+                <Instagram size={16} />
+                <span className="sm:hidden">Instagram</span>
+                <span className="hidden sm:inline">
+                  @vencedorespontemetalica
+                </span>
                 <ArrowUpRight size={14} />
               </a>
             </div>

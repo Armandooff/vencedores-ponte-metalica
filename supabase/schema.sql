@@ -103,6 +103,21 @@ create table if not exists public.presencas (
 create index if not exists presencas_atleta_idx on public.presencas (atleta_id);
 
 -- ============================================================
+-- Newsletter
+-- ============================================================
+
+-- Lista de novidades futuras. A leitura e a escrita ficam restritas ao
+-- servidor (service role); nenhuma política é criada para anon/authenticated.
+create table if not exists public.newsletter_inscritos (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  consentimento boolean not null default false,
+  criado_em timestamptz not null default now()
+);
+
+alter table public.newsletter_inscritos enable row level security;
+
+-- ============================================================
 -- Helpers e triggers
 -- ============================================================
 

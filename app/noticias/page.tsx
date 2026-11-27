@@ -6,7 +6,8 @@ import NoticiasLista from "@/components/noticias/NoticiasLista";
 export const metadata: Metadata = {
   title: "Notícias & novidades",
   description:
-    "Acompanhe treinos, competições, avisos e histórias do projeto Vencedores da Ponte Metálica.",
+    "Acompanhe treinos, competições, avisos e histórias do projeto Vencedores da Ponte Metálica. Inscreva-se para receber novidades futuras por e-mail.",
+  alternates: { canonical: "/noticias" },
 };
 
 export default function PaginaNoticias() {

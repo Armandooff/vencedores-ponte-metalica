@@ -10,6 +10,7 @@ const links = [
   { href: "/#projeto", label: "Projeto" },
   { href: "/#treinos", label: "Treinos" },
   { href: "/#galeria", label: "Galeria" },
+  { href: "/agenda", label: "Agenda" },
   { href: "/noticias", label: "Notícias" },
   { href: "/doacoes", label: "Doações" },
 ];
@@ -116,7 +117,10 @@ export default function Header() {
                 <span className="font-display text-4xl uppercase leading-none text-white transition group-hover:text-sun">
                   {link.label}
                 </span>
-                <span className="text-xs font-bold text-white/30">
+                <span
+                  aria-hidden="true"
+                  className="text-xs font-bold text-white/50"
+                >
                   0{i + 1}
                 </span>
               </Link>
